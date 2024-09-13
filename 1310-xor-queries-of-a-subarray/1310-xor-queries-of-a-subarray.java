@@ -2,7 +2,7 @@ class Solution {
     
     public int[] xorQueries(int[] arr, int[][] queries)
     {
-        int[] result = new int[arr.length];
+        int[] result = new int[queries.length];
 
         int start = queries[0][0];
         int end = queries[0][1];
