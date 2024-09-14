@@ -1,42 +1,47 @@
 class Solution {
-    int[][] memo; //store health on a cell
-    public boolean findSafeWalk(List<List<Integer>> grid, int health) {
-        memo = new int[grid.size()][grid.get(0).size()];
-
-        return dfs(0, 0, grid, health);
-    }
-
-    private boolean dfs(int row, int col, List<List<Integer>> grid, int health)
-    {
-        if (row < 0 || row > grid.size()-1 || col < 0 || col > grid.get(0).size()-1)
+        public boolean findSafeWalk(List<List<Integer>> grid, int health)
         {
+            final int rows = grid.size();
+            final int cols = grid.get(0).size();
+            int[][] memo = new int[rows][cols];
+
+            Queue<int[]> queue = new LinkedList<>();
+            queue.offer(new int[]{0,0,health});
+
+            while (queue.size() > 0)
+            {
+                int[] cell = queue.poll();
+                int row = cell[0];
+                int col = cell[1];
+
+                if (row < 0 || row > rows-1 || col < 0 || col > cols-1 )
+                {
+                    continue;
+                }
+
+                int currHealth = cell[2] - grid.get(row).get(col);
+                if (currHealth <= 0)
+                {
+                    continue;
+                }
+
+                if (row == rows-1 && col == cols-1)
+                {
+                    return true;
+                }
+                if (currHealth <= memo[row][col])
+                {
+                    // if we were here with same or more health, this is not the optimal path
+                    continue;
+                }
+                memo[row][col] = currHealth;
+
+                queue.offer(new int[]{row+1,col,currHealth});
+                queue.offer(new int[]{row,col+1,currHealth});
+                queue.offer(new int[]{row-1,col,currHealth});
+                queue.offer(new int[]{row,col-1,currHealth});
+            }
+
             return false;
         }
-        health -= grid.get(row).get(col);
-
-        if (memo[row][col] >= health )
-        {
-            // if we already were here with same or less health, this is not the optimal path
-            return false;
-        }
-        if (health == 0)
-        {
-            return false;
-        }
-
-        if (row == grid.size()-1 && col == grid.get(0).size()-1)
-        {
-            return true;
-        }
-
-        memo[row][col] = health;
-
-        if (dfs(row+1,col,grid, health)) return true;
-        if (dfs(row,col+1,grid, health)) return true;
-        if (dfs(row-1,col,grid, health)) return true;
-        if (dfs(row,col-1,grid, health)) return true;
-
-
-        return false;
-    }
 }
