@@ -35,9 +35,9 @@ class Solution {
             return true;
         }
 
-        memo[row][col] = health - - grid.get(row).get(col);
+        memo[row][col] = health - grid.get(row).get(col);
         path.add(row * grid.size() * grid.get(0).size() + col);
-        
+
         if (dfs(row+1,col,grid,path, health - grid.get(row).get(col))) return true;
         if (dfs(row,col+1,grid,path, health - grid.get(row).get(col))) return true;
         if (dfs(row-1,col,grid,path, health - grid.get(row).get(col))) return true;
