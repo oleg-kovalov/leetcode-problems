@@ -1,30 +1,26 @@
 class Solution {
-    public long maxScore(int[] a, int[] b) {
-        long[][] dp = new long[b.length][4]; // position in the array b and number of indices used
-        for (int i=0; i<b.length; i++)
+
+        Long[][] memo;
+        public long maxScore(int[] a, int[] b)
         {
-            Arrays.fill(dp[i], Long.MIN_VALUE);
+            memo = new Long[a.length][b.length];
+            return recursion(0, 0, a, b);
         }
-        
-        dp[0][0] = (long) a[0] * b[0];
-        for (int i=1; i<b.length; i++)
+
+        private long recursion(int ia, int ib, int[] a, int[] b)
         {
-            dp[i][0] = Math.max(dp[i-1][0], 1L * a[0] * b[i]);
+            if (ia == a.length) return 0;
+            if (ib >= b.length) return (long) -1e9; //Long.MIN_VALUE; //invalid path
+
+            if (memo[ia][ib] != null) return memo[ia][ib];
             
-            if (i >= 1)
-            {
-                dp[i][1] = Math.max(dp[i-1][1], dp[i-1][0] + 1L * a[1] * b[i]);
-            }
-            if (i >= 2)
-            {
-                dp[i][2] = Math.max(dp[i-1][2], dp[i-1][1] + 1L * a[2] * b[i]);
-            }
-            if (i >= 3)
-            {
-                dp[i][3] = Math.max(dp[i - 1][3], dp[i - 1][2] + 1L * a[3] * b[i]);
-            }
+            long take =  1L * a[ia] * b[ib] + recursion(ia + 1, ib + 1, a, b);
+            long noTake = recursion(ia, ib + 1, a, b);
+
+            long result = Math.max(take, noTake);
+            memo[ia][ib] = result;
+            return result;
         }
-        
-        return dp[b.length-1][3];
-    }
+
+    
 }
