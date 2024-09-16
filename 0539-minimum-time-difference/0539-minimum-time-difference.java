@@ -14,7 +14,7 @@ class Solution {
             diff = Math.min(diff, minutes[i] - minutes[i-1]);
         }
 
-        diff = Math.min(diff, 1440 + minutes[0] - minutes[minutes.length-1]);
+        diff = Math.min(diff, 24 * 60 + minutes[0] - minutes[minutes.length-1]);
 
         return diff;
     }
