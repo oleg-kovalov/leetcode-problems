@@ -12,15 +12,15 @@ class Solution {
         }
 
         List<String> result = new ArrayList<>();
-        for (String word : freqMap.keySet())
+        for (Map.Entry<String,Integer> entry : freqMap.entrySet())
         {
-            if (freqMap.get(word) == 1)
+            if (entry.getValue() == 1)
             {
-                result.add(word);
+                result.add(entry.getKey());
             }
         }
 
-        return result.toArray(new String[0]);
+        return result.toArray(new String[result.size()]);
 
     }
 }
