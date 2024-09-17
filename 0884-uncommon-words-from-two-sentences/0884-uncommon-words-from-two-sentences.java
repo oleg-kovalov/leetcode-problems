@@ -11,10 +11,16 @@ class Solution {
             freqMap.put(word, freqMap.getOrDefault(word, 0) + 1);
         }
 
-        return freqMap.entrySet().stream()
-                .filter(e -> e.getValue() == 1)
-                .map(e -> e.getKey())
-                .toArray(String[]::new);
+        List<String> result = new ArrayList<>();
+        for (String word : freqMap.keySet())
+        {
+            if (freqMap.get(word) == 1)
+            {
+                result.add(word);
+            }
+        }
+
+        return result.toArray(new String[0]);
 
     }
 }
