@@ -1,21 +1,19 @@
 class Solution {
     public int reverse(int x) {
-        boolean neg = x < 0;
-        long num = Math.abs(x);
-        long remainder = 0L;
-        long result = 0L;
+        int remainder = 0;
+        int result = 0;
 
-        while (num > 0)
+        while (x != 0)
         {
-            remainder = num % 10;
-            num /= 10;
+            remainder = x % 10;
+            x /= 10;
+
+            if (Math.abs(result) > Integer.MAX_VALUE  / 10 ) return 0;
+
             result = result * 10 + remainder;
         }
-        
-        result *= neg ? -1 : 1;
-        
-        if (Integer.MIN_VALUE <= result && result <= Integer.MAX_VALUE ) return (int) result;
 
-        return 0;
+        return result;
+
     }
 }
