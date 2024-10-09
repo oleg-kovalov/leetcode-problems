@@ -1,54 +1,53 @@
 class Solution {
-    class MonsterCoin {
 
-        final int monster;
-        final int coin;
-
-        public MonsterCoin(int monster, int coin)
+        public long[] maximumCoins(int[] heroes, int[] monsters, int[] coins)
         {
-            this.monster = monster;
-            this.coin = coin;
-        }
-
-        public int getMonster() { return monster; }
-
-        public int getCoin() { return coin; }
-
-    }
-
-    public long[] maximumCoins(int[] heroes, int[] monsters, int[] coins) {
-        PriorityQueue<MonsterCoin> minHeap = new PriorityQueue<>(Comparator.comparing(MonsterCoin::getMonster));
-        for (int i=0; i < monsters.length; i++)
-        {
-            minHeap.offer(new MonsterCoin(monsters[i], coins[i]));
-        }
-
-        HashMap<Integer, Long> heroToCoin = new HashMap<>();
-        
-        long[] result = new long[heroes.length];
-        for (int i=0; i<heroes.length; i++)
-        {
-            result[i] = heroes[i];
-        }
-        Arrays.sort(heroes);
-        long prevCoins = 0;
-        for (int i=0; i< heroes.length; i++)
-        {
-            long currCoins = 0;
-            while (minHeap.peek() != null && minHeap.peek().getMonster() <= heroes[i]) {
-                currCoins += minHeap.poll().getCoin();
+            int[][] monstersAndCoins = new int[monsters.length][2];
+            for (int i=0; i<monsters.length; i++)
+            {
+                monstersAndCoins[i][0] = monsters[i];
+                monstersAndCoins[i][1] = coins[i];
             }
-            heroToCoin.put(heroes[i], currCoins + prevCoins);
-            prevCoins += currCoins;
+            Arrays.sort(monstersAndCoins, (a, b) -> a[0] - b[0]);
+
+            // running sum of coins for monster in ASC
+            long[] coinsSum = new long[monsters.length];
+            long prefixSum = 0;
+            for (int i=0; i<coinsSum.length; i++)
+            {
+                prefixSum += monstersAndCoins[i][1];
+                coinsSum[i] = prefixSum;
+            }
+
+            long[] result = new long[heroes.length];
+            for (int i=0; i<heroes.length; i++)
+            {
+                result[i] = findTotalCoins(heroes[i], monstersAndCoins, coinsSum);
+            }
+
+            return result;
+
         }
 
-        for (int i=0; i < result.length; i++)
+        private long findTotalCoins(int hero, int[][] monstersAndCoins, long[] coinsSum)
         {
-            result[i] = heroToCoin.get((int)result[i]);
+            int lo = 0;
+            int hi = monstersAndCoins.length-1;
+
+            while ( lo <= hi)
+            {
+                int mid = (lo + hi) /2;
+                if (hero < monstersAndCoins[mid][0])
+                {
+                    hi = mid - 1;
+                } else {
+                    lo = mid + 1;
+                }
+            }
+
+            if (lo == 0 && monstersAndCoins[0][0] > hero) return 0;
+
+            return coinsSum[hi];
         }
-
-
-        return result;
-    }
 
 }
