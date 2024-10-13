@@ -50,7 +50,7 @@ class Solution {
         {
             int leftCandle = rightCandles[queries[q][0]];
             int rightCandle = leftCandles[queries[q][1]]; 
-            if (leftCandle >= rightCandle)
+            if (leftCandle == -1 || rightCandle == -1 || leftCandle >= rightCandle)
             {
                 result[q] = 0;
                 continue;
