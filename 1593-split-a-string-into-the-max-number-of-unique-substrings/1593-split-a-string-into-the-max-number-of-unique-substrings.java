@@ -1,18 +1,26 @@
 class Solution {
     
     HashSet<String> seen = new HashSet<>();
+    int result = 0;
     public int maxUniqueSplit(String s) {
         if (s.length() == 1) return 1;
 
-        return backtrack(s, 0, 0);
+        backtrack(s, 0, 0);
+        return result;
 
     }
 
-    private int backtrack(String s, int start, int count)
+    private void backtrack(String s, int start, int count)
     {
-        if (start == s.length()) return count;
+        if (count + s.length() - start  <= result)
+        {
+            return;
+        }
 
-        int result = -1;
+        if (start == s.length()) {
+            result = Math.max(result, count);
+            return;
+        }
 
         for (int end = start+1; end < s.length()+1; end++)
         {
@@ -20,11 +28,10 @@ class Solution {
             if (seen.contains(substr)) continue;
 
             seen.add(substr);
-            result = Math.max(result, backtrack(s, end, count + 1));
+            backtrack(s, end, count + 1);
 
             seen.remove(substr);
         }
 
-        return result;
     }
 }
