@@ -14,74 +14,37 @@
  * }
  */
 class Solution {
-    Map<Integer, List<Integer>> heightToNode = new TreeMap<>(Comparator.reverseOrder());
-    Map<Integer, Integer> nodeToParent = new HashMap<>();
-    Map<Integer, Boolean> nodeToActive = new HashMap<>(); 
-    
+    Map<Integer, Integer> nodeToDepth = new HashMap<>(); // depth of tree if node will be removed
+    int maxDepth;
     public int[] treeQueries(TreeNode root, int[] queries) {
-        dfs(root, -1, 0);    
-        int[] result = new int[queries.length];
+        maxDepth = 0;
+        dfs(root, 0, true); //left to right
+        maxDepth = 0;
+        dfs(root, 0, false); //right to left
 
+        int[] result = new int[queries.length];
         for (int i=0; i<queries.length; i++)
         {
-            int query = queries[i];
-
-            for (int node: nodeToActive.keySet())
-            {
-                // restore tree before next query
-                nodeToActive.put(node, true);
-            }
-            nodeToActive.put(query, false);
-
-            for (Map.Entry<Integer, List<Integer>> entry: heightToNode.entrySet())
-            {
-                for (Integer node: entry.getValue())
-                {
-                    List<Integer> parents = new ArrayList<>();
-                    while (node != -1 && nodeToActive.get(node))
-                    {
-                        parents.add(node);
-                        node = nodeToParent.get(node);
-                    }
-                    if (node == -1)
-                    {
-                        // all nodes up to root are active, we have the result
-                        result[i] = entry.getKey();
-                        break;
-                    } else 
-                    {
-                        // there an inactive node among parents
-                        // we make all visited nodes inactive as well
-                        for (int parent: parents)
-                        {
-                            nodeToActive.put(parent, false);
-                        }
-                    }
-                }
-                if (result[i] > 0) break;
-            }
+            result[i] = nodeToDepth.get(queries[i]);
         }
-
         return result;
     }
 
-    private void dfs(TreeNode curr, int parent, int height)
+    private void dfs(TreeNode curr, int depth, boolean leftToRight)
     {
-        if (curr == null) {
-            return;
-        }
+        if (curr == null) return;
 
-        if (!heightToNode.containsKey(height))
+        nodeToDepth.put(curr.val, 
+            Math.max(Math.max(depth-1, maxDepth), nodeToDepth.getOrDefault(curr.val, 0))); //depth if we delete this node
+        maxDepth = Math.max(maxDepth, depth);
+        if (leftToRight)
         {
-            heightToNode.put(height, new ArrayList<>());
+            dfs(curr.left, depth+1, leftToRight);
+            dfs(curr.right, depth+1, leftToRight);
+        } else {
+            dfs(curr.right, depth+1, leftToRight);
+            dfs(curr.left, depth+1, leftToRight);
         }
-        heightToNode.get(height).add(curr.val);
-        nodeToParent.put(curr.val, parent);
-        nodeToActive.put(curr.val, true);
 
-        dfs(curr.left, curr.val, height+1);
-        dfs(curr.right, curr.val, height+1);
     }
-
-
 }
