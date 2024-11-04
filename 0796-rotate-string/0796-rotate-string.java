@@ -11,7 +11,7 @@ class Solution {
         if (i == s.length()) i=0;
         while (j < goal.length())
         {
-            if (i == start && j == 0) return false;
+            // if (i == start && j == 0) return false;
 
             if (s.charAt(i) == goal.charAt(j))
             {
@@ -19,7 +19,8 @@ class Solution {
                 i++;
                 if (i == s.length()) i=0;
             } else {
-                i = s.indexOf(g1, i);
+                i = s.indexOf(g1, start+1);
+                start = i;
                 if ( i == -1 ) return false;
                 j = 0;
             }
