@@ -1,31 +1,65 @@
 class Solution {
-    public boolean rotateString(String s, String goal) {
-        if (goal.length() != s.length()) return false;
-        
-        char g1 = goal.charAt(0);
-        int start = s.indexOf(g1);
-        if (start == -1) return false;
-
-        int j=1;
-        int i=start+1;
-        if (i == s.length()) i=0;
-        while (j < goal.length())
+        public boolean rotateString(String s, String goal)
         {
-            // if (i == start && j == 0) return false;
+            if (s.length() != goal.length()) return false;
 
-            if (s.charAt(i) == goal.charAt(j))
-            {
-                j++;
-                i++;
-                if (i == s.length()) i=0;
-            } else {
-                i = s.indexOf(g1, start+1);
-                start = i;
-                if ( i == -1 ) return false;
-                j = 0;
-            }
+            String doubleStr = s + s;
+
+            return kmpSearch(doubleStr, goal);
+
         }
 
-        return true;
-    }
+        private boolean kmpSearch(String text, String pattern)
+        {
+            int[] lps = computeLPS(pattern);
+            int textIndex = 0;
+            int patternIndex = 0;
+
+            while (textIndex < text.length())
+            {
+                if (text.charAt(textIndex) == pattern.charAt(patternIndex))
+                {
+                    textIndex++;
+                    patternIndex++;
+                    if (patternIndex == pattern.length()) return true;
+                }
+                else if (patternIndex > 0)
+                {
+                    patternIndex = lps[patternIndex - 1];
+                }
+                else {
+                    textIndex++;
+                }
+            }
+
+            return false;
+        }
+
+        private int[] computeLPS(String pattern)
+        {
+            int[] lps = new int[pattern.length()];
+            int length = 0;
+            int index = 1;
+
+            while (index < pattern.length())
+            {
+                if (pattern.charAt(index) == pattern.charAt(length))
+                {
+                    length++;
+                    lps[index] = length;
+                    index++;
+                }
+                else {
+                    if (length > 0)
+                    {
+                        length = lps[length - 1];
+                    } else {
+                        lps[index] = 0;
+                        index++;
+                    }
+                }
+            }
+
+            return lps;
+        }
 }
