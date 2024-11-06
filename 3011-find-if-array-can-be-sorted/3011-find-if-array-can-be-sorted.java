@@ -1,24 +1,38 @@
 class Solution {
     public boolean canSortArray(int[] nums) {
 
+        if (nums.length == 1) return true;
 
-        for (int i = 1; i < nums.length; i++) {
-            int j = i;
-            while (j > 0 && nums[j] < nums[j - 1]) {
-                if (Integer.bitCount(nums[j]) != Integer.bitCount(nums[j-1]))
+        for (int i=0; i<nums.length - 1; i++)
+        {
+            for (int j=0; j< nums.length - 1; j++)
+            {
+                if (nums[j] > nums[j+1])
                 {
-                    return false;
-                }
+                    if (bitCount(nums[j]) != bitCount(nums[j+1])) return false;
 
-                int tmp = nums[j - 1];
-                nums[j - 1] = nums[j];
-                nums[j] = tmp;
-                j--;
+                    int temp = nums[j];
+                    nums[j] = nums[j+1];
+                    nums[j+1] = temp;
+                }
             }
         }
 
-//        System.out.println(Arrays.toString(nums));
-
         return true;
+    }
+
+    private int bitCount (int num)
+    {
+        int count = 0;
+        while (num > 0)
+        {
+            if ((num | 1) == num) count++;
+
+            num = num >> 1;
+        }
+
+        System.out.println(count);
+
+        return count;
     }
 }
