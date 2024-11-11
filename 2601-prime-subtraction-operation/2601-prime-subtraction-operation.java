@@ -12,8 +12,8 @@ class Solution {
             {
                 pid++;
             }
-            
-            if (pid > 1) num = num - primes.get(pid-1);
+
+            if (pid > 0) num = num - primes.get(pid-1);
             if (num <= prev) return false;
             prev = num;
         }
