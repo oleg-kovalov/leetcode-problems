@@ -4,17 +4,16 @@ class Solution {
 
         int pivot = findPivot(nums);
 
+        if (target == nums[pivot])
+        {
+            return pivot;
+        } 
+        if (target >= nums[0] && pivot > 0)
+        {
+            return search(nums, 0, pivot-1, target);
+        }
 
-        int leftResult = search(nums, 0, pivot-1, target);
-        if (leftResult != -1) return leftResult;
-    
-
-        int rightResult = search(nums, pivot, nums.length-1, target);
-        if (rightResult != -1) return rightResult;
-        
-
-        return -1;
-
+        return search(nums, pivot, nums.length-1, target);
 
     }
 
