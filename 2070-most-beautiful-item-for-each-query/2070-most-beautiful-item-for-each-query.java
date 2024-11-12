@@ -26,7 +26,7 @@ class Solution {
                     hi = mid-1;
                 } else {
                     // found matching price, continue search if better is possible 
-                    maxBeauty = Math.max(maxBeauty, items[lo][1]);
+                    maxBeauty = Math.max(maxBeauty, items[mid][1]);
                     lo = mid + 1;
                 }
             }
