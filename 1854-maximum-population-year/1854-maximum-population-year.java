@@ -1,26 +1,30 @@
 class Solution {
         public int maximumPopulation(int[][] logs)
         {
-            Arrays.sort(logs, (a,b) -> a[0] - b[0]);
-            
-            PriorityQueue<Integer> minHeap = new PriorityQueue<>();
-            int maxPopulation = 0;
-            int maxPopulationYear = 0;
-            for (int[] log : logs)
+            // line sweep
+            int[] prefix = new int[101];
+            for (int[] log: logs)
             {
-                while (minHeap.peek() != null && minHeap.peek() <= log[0])
+                prefix[log[0] - 1950] += 1;
+                prefix[log[1] - 1950] -= 1;
+            }
+
+            for (int i=1; i<prefix.length; i++)
+            {
+                prefix[i] += prefix[i - 1];
+            }
+
+            int max = 0;
+            int firstMaxYear = 0;
+            for (int i=0; i < prefix.length; i++)
+            {
+                if (max < prefix[i])
                 {
-                    minHeap.poll();
-                }
-                minHeap.offer(log[1]);
-                
-                if (minHeap.size() > maxPopulation)
-                {
-                    maxPopulation = minHeap.size();
-                    maxPopulationYear = log[0];
+                    max = prefix[i];
+                    firstMaxYear = i + 1950;
                 }
             }
-            
-            return maxPopulationYear;
+
+            return firstMaxYear;
         }
 }
