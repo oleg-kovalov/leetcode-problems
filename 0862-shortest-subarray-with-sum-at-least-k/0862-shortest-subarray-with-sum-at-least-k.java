@@ -1,28 +1,34 @@
 class Solution {
-    
+        class Tuple {
+            final long sum;
+            final int idx;
+            
+            public Tuple(long sum, int idx) { this.sum = sum; this.idx = idx; }
+        }
+        
         public int shortestSubarray(int[] nums, int k)
         {
             if (nums.length == 1) return nums[0] <= k ? 1 : 0;
 
-            ArrayList<int[]> stack = new ArrayList<>();
+            ArrayList<Tuple> stack = new ArrayList<>();
             int minLen = Integer.MAX_VALUE;
 
-            int[] prefix = new int[nums.length];
+            long[] prefix = new long[nums.length];
             prefix[0] = nums[0];
 
             if (prefix[0] > k) return 1;
 
-            stack.add(new int[]{prefix[0], 0});
+            stack.add(new Tuple(prefix[0], 0));
             for (int i=1; i<nums.length; i++)
             {
                 prefix[i] = prefix[i-1] + nums[i];
 
-                while (stack.size() > 0 && stack.get(stack.size()-1)[0] >= prefix[i] )
+                while (stack.size() > 0 && stack.get(stack.size()-1).sum >= prefix[i] )
                 {
                     stack.remove(stack.size()-1);
                 }
 
-                stack.add(new int[]{prefix[i], i});
+                stack.add(new Tuple(prefix[i], i));
 
                 int discard = rightmostDiscard(stack,  prefix[i] - k);
                 if (discard == -1 && prefix[i] >= k)
@@ -31,7 +37,7 @@ class Solution {
                 }
                 else if (discard != -1)
                 {
-                    minLen = Math.min(minLen, i - stack.get(discard)[1]); // length from discard to i
+                    minLen = Math.min(minLen, i - stack.get(discard).idx); // length from discard to i
                 }
 
             }
@@ -40,7 +46,7 @@ class Solution {
 
         }
 
-        private int rightmostDiscard(ArrayList<int[]> stack, int target)
+        private int rightmostDiscard(ArrayList<Tuple> stack, long target)
         {
             // find the rightmost element that is  <= target
             int lo = 0;
@@ -49,7 +55,7 @@ class Solution {
             while (lo <= hi)
             {
                 int mid = ( lo + hi) / 2;
-                if (stack.get(mid)[0] <= target)
+                if (stack.get(mid).sum <= target)
                 {
                     result = mid;
                     lo = mid + 1;
