@@ -10,24 +10,20 @@ class Solution {
         if (count[0] < k || count[1] < k || count[2] < k) return -1;
 
         int start = 0;
-        int end = 0;
         int[] runningCount = new int[3];
-        runningCount[s.charAt(start) - 'a']++;
         int maxWindow = 0; // size of largest window that can be removed
-        while (start < s.length() && end < s.length())
+        for (int end = 0; end < s.length(); end++)
         {
+            runningCount[s.charAt(end) - 'a']++;
 
-            if (count[s.charAt(end) - 'a'] - runningCount[s.charAt(end) - 'a'] >= k)
+            while (count[s.charAt(end) - 'a'] - runningCount[s.charAt(end) - 'a'] < k)
             {
-                maxWindow = Math.max(maxWindow, end - start + 1);
-                end++;
-                if (end == s.length()) break;
-                runningCount[s.charAt(end) - 'a']++;
-            } else {
                 // invalid window, shrink from left trying to make it valid
                 runningCount[s.charAt(start) - 'a']--;
                 start++;
             }
+
+            maxWindow = Math.max(maxWindow, end - start + 1);
         }
 
         return s.length() - maxWindow;
