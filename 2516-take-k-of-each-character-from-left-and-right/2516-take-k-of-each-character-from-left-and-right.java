@@ -29,15 +29,15 @@ class Solution {
                 // invalid window, shrink from left trying to make it valid
                 runningCount[s.charAt(start) - 'a']--;
                 start++;
-                if (start > end)
-                {
-                    //invalid, start over at end+1
-                    start = end + 1;
-                    if (start == s.length()) break;
-                    end = start;
-                    runningCount = new int[3];
-                    runningCount[s.charAt(start) - 'a']++;
-                }
+                // if (start > end)
+                // {
+                //     //invalid, start over at end+1
+                //     start = end + 1;
+                //     if (start == s.length()) break;
+                //     end = start;
+                //     runningCount = new int[3];
+                //     runningCount[s.charAt(start) - 'a']++;
+                // }
             }
         }
 
