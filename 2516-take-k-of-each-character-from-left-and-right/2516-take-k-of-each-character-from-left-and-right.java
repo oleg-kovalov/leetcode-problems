@@ -17,9 +17,7 @@ class Solution {
         while (start < s.length() && end < s.length())
         {
 
-            if (count[0] - runningCount[0] >= k
-                && count[1] - runningCount[1] >= k
-                && count[2] - runningCount[2] >= k)
+            if (count[s.charAt(end) - 'a'] - runningCount[s.charAt(end) - 'a'] >= k)
             {
                 maxWindow = Math.max(maxWindow, end - start + 1);
                 end++;
@@ -29,15 +27,6 @@ class Solution {
                 // invalid window, shrink from left trying to make it valid
                 runningCount[s.charAt(start) - 'a']--;
                 start++;
-                // if (start > end)
-                // {
-                //     //invalid, start over at end+1
-                //     start = end + 1;
-                //     if (start == s.length()) break;
-                //     end = start;
-                //     runningCount = new int[3];
-                //     runningCount[s.charAt(start) - 'a']++;
-                // }
             }
         }
 
