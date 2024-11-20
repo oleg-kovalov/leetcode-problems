@@ -12,10 +12,10 @@ class Solution {
         int start = 0;
         int end = 0;
         int[] runningCount = new int[3];
+        runningCount[s.charAt(start) - 'a']++;
         int maxWindow = 0; // size of largest window that can be removed
         while (start < s.length() && end < s.length())
         {
-            runningCount[s.charAt(end) - 'a']++;        
 
             if (count[0] - runningCount[0] >= k
                 && count[1] - runningCount[1] >= k
@@ -23,11 +23,21 @@ class Solution {
             {
                 maxWindow = Math.max(maxWindow, end - start + 1);
                 end++;
+                if (end == s.length()) break;
+                runningCount[s.charAt(end) - 'a']++;
             } else {
-                // invalid window, start over at end+1
-                start = end + 1;
-                end = start;
-                runningCount = new int[3];
+                // invalid window, shrink from left trying to make it valid
+                runningCount[s.charAt(start) - 'a']--;
+                start++;
+                if (start > end)
+                {
+                    //invalid, start over at end+1
+                    start = end + 1;
+                    if (start == s.length()) break;
+                    end = start;
+                    runningCount = new int[3];
+                    runningCount[s.charAt(start) - 'a']++;
+                }
             }
         }
 
