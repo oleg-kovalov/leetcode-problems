@@ -1,22 +1,38 @@
 class Solution {
     public void sortColors(int[] nums) {
-        int[] freq = new int[3];
-        
-        for (int num: nums)
+        int left = 0;
+        while (left < nums.length && nums[left] == 0)
         {
-            freq[num] += 1;    
+            left += 1;
         }
 
-        int freqId= 0;
-        for (int i=0; i<nums.length; i++)
+        int right = nums.length - 1;
+        while (right >= 0 && nums[right] == 2)
         {
-            while (freq[freqId] == 0)
-            {
-                freqId++;
-            }
+            right -= 1;
+        }
 
-            nums[i] = freqId;
-            freq[freqId]--;
+        int curr = left;
+        while (curr <= right)
+        {
+            if (nums[curr] == 0)
+            {
+                // swap with left
+                int tmp = nums[left];
+                nums[left] = nums[curr];
+                nums[curr] = tmp;
+                curr++;
+                left++; 
+            } else if (nums[curr] == 2)
+            {
+                // swap with right
+                int tmp = nums[right];
+                nums[right] = nums[curr];
+                nums[curr] = tmp;
+                right--;
+            } else {
+                curr++;
+            }
         }
     }
 }
