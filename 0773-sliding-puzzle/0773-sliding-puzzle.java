@@ -30,10 +30,10 @@ class Solution {
         while (minHeap.size() > 0)
         {
             State state = minHeap.poll();
-            System.out.println(state.moves + " - " + state.order.toString());
+            // System.out.println(state.moves + " - " + state.order.toString());
 
             if ("123450".equals(state.order.toString())) return state.moves;
-            if (state.moves > 16) return -1; //what is max moves?
+            if (state.moves > 20) return -1; //what is max moves?
 
             int zero = -1;
             for (int i=0; i<state.order.length(); i++)
