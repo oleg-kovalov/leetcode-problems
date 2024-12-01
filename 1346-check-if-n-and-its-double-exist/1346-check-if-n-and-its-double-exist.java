@@ -1,18 +1,33 @@
 class Solution {
     public boolean checkIfExist(int[] arr) {
-        HashSet<Integer> pair = new HashSet<>();
-        for (int num: arr)
-        {
-            if (pair.contains(num)) return true;
+        Arrays.sort(arr);
 
-            if (num == 0) {
-                pair.add(0);
-            } else {
-                pair.add(num * 2);
-                if (num % 2 == 0)
+        for (int i=0; i<arr.length; i++)
+        {
+            if (arr[i] == 0)
+            {
+                if (i < arr.length - 1 && arr[i+1] == 0)
                 {
-                    pair.add(num / 2);
-                }                
+                    return true;
+                } else {
+                    continue;
+                }
+            }
+            int target = arr[i] * 2;
+            int lo = 0;
+            int hi = arr.length - 1;
+            while ( lo <= hi)
+            {
+                int mid = (lo + hi) / 2;
+
+                if (arr[mid] == target) {
+                    return true;
+                } else if (arr[mid] < target)
+                {
+                    lo = mid + 1;
+                } else {
+                    hi = mid - 1;
+                }
             }
         }
 
