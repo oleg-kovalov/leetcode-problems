@@ -1,18 +1,18 @@
 class Solution {
     public String addSpaces(String s, int[] spaces) {
 
-
+        int spaceIdx  = 0;
         StringBuilder sb = new StringBuilder();
-        sb.append(s.substring(0, spaces[0]));
-        sb.append(' ');
-        
-        for (int i=1; i<spaces.length; i++)
-        {
-            sb.append(s.substring(spaces[i-1], spaces[i]));
-            sb.append(' ');
-        }
 
-        sb.append(s.substring(spaces[spaces.length - 1]));
+        for (int i=0; i<s.length(); i++)
+        {
+            if (spaceIdx < spaces.length && i == spaces[spaceIdx])
+            {
+                sb.append(' ');
+                spaceIdx += 1;
+            }
+            sb.append(s.charAt(i));
+        }
 
         return sb.toString();
 
