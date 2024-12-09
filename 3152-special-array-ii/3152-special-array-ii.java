@@ -7,7 +7,6 @@ class Solution {
             if ((nums[i] % 2) == (nums[i-1] % 2))
             {
                 anomalies.add(i-1);
-                System.out.println("anomaly added" + (i-1));
             }
         }
 
