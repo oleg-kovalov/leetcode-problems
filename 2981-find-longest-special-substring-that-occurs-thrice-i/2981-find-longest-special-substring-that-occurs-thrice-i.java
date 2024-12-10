@@ -15,7 +15,7 @@ class Solution {
                 if (thirdMatch == -1) break;
 
                 max = Math.max(max, substr.length());
-                System.out.println("found " + substr);
+                // System.out.println("found " + substr);
             }
         }
 
