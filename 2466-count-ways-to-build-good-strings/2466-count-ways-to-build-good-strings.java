@@ -1,32 +1,23 @@
 class Solution {
-    int low;
-    int high;
-    int zero;
-    int one;
-    HashMap<Integer, Long> memo;
+
     public int countGoodStrings(int low, int high, int zero, int one) {
-        this.low = low;
-        this.high = high;
-        this.zero = zero;
-        this.one = one;
-        memo = new HashMap<>();
+        int mod = 1_000_000_007;
+        int [] dp = new int[high + 1];
+        dp[0] = 1;
 
-        long result = backtracking(new StringBuilder(), 0);
+        for (int i=1; i<high + 1; i++)
+        {
+            dp[i] = ((i < zero ? 0 : dp[i - zero]) + (i < one ? 0 : dp[i - one])) % mod;
+        }
 
-        return (int)result % 1_000_000_007;
-    }
+        int result = 0;
+        for (int i=low; i< high + 1; i++)
+        {
+            result += dp[i];
+            result %= mod;
+        }
 
-    private long backtracking(StringBuilder str, int length)
-    {
-        if (length > high) return 0;
-        if (memo.containsKey(high - length)) return memo.get(high - length);
-
-        long count = (length >= low ? 1 : 0) 
-            + backtracking(str.append('0'), length + zero)
-            + backtracking(str.append('1'), length + one);
-        
-        memo.put(high - length, count);
-        return count % 1_000_000_007;
+        return result;
     }
     
 }
