@@ -1,38 +1,27 @@
 class Solution {
-    int[] days;
-    int[] costs;
-    HashMap<Integer, Integer> memo;
-    HashSet<Integer> isTravelNeeded = new HashSet<>();
-    HashSet<Integer> travelDays = new HashSet<>();
 
     public int mincostTickets(int[] days, int[] costs) {
-        this.days = days;
-        this.costs = costs;
+        int last = days[days.length - 1];
+        int[] dp = new int[last + 1];
 
-        for (int day: days) travelDays.add(day);
-        
-        memo = new HashMap<>();
+        int i=0;
+        for (int day=1; day < dp.length; day++)
+        {
+            if (day != days[i]) {
+                dp[day] = dp[day-1];
+                continue;
+            }
 
-        return rec(1);
+            i += 1;
+            int pay1 = costs[0] + dp[day - 1];
+            int pay7 = costs[1] + (day < 7 ? 0 : dp[day - 7]); 
+            int pay30 = costs[2] + (day < 30 ? 0 : dp[day - 30]); 
+            dp[day] = Math.min(pay1, Math.min(pay7, pay30));
+
+        }
+
+        return dp[last];
+
     }
-
-    private int rec(int curr) {
-        if (curr > days[days.length - 1]) return 0;
-
-        if (!travelDays.contains(curr)) return rec(curr + 1);
-
-        if (memo.containsKey(curr)) return memo.get(curr);
-
-        int oneDay = costs[0] + rec(curr + 1);
-        int sevenDay = costs[1] + rec(curr + 7);
-        int thirtyDay = costs[2] + rec(curr + 30);
-
-        int result = Math.min(oneDay, Math.min(sevenDay, thirtyDay));
-
-        memo.put(curr, result);
-
-        return result;
-    }
-
 
 }
