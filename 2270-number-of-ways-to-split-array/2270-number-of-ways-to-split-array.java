@@ -1,7 +1,7 @@
 class Solution {
     public int waysToSplitArray(int[] nums) {
         
-        int[] prefix = new int[nums.length];
+        long[] prefix = new long[nums.length];
         prefix[0] = nums[0];
         for (int i=1; i<nums.length; i++)
         {
