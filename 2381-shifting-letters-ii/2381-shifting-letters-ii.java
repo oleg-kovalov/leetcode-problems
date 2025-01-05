@@ -15,7 +15,7 @@ class Solution {
         {
             runningSum += combined[i];
             // System.out.println(runningSum);
-            int shift = (s.charAt(i) - 'a' + 26 + runningSum) % 26;
+            int shift = (s.charAt(i) - 'a' + 26 + runningSum % 26) % 26;
             System.out.println(shift);
             result.append((char)('a' + shift));
         }
