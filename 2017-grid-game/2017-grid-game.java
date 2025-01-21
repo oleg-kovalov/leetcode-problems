@@ -1,6 +1,7 @@
 class Solution {
     public long gridGame(int[][] grid) {
         int n = grid[0].length;
+        if (n == 1) return 0;
 
         long[] upper = new long[n];
         upper[n-1] = grid[0][n-1];
