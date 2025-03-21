@@ -1,41 +1,31 @@
 class Solution {
-        public boolean isValidSudoku(char[][] board)
+    public boolean isValidSudoku(char[][] board) {
+        
+        int[][] rowsCount = new int[9][9];
+        int[][] colsCount = new int[9][9];
+        int[][] boxesCount = new int[9][9];
+
+
+        for (int row=0; row < board.length; row++)
         {
-            int[] seenRows = new int[board.length];
-            int[] seenCols = new int[board.length];
-            int[] seenBoxes = new int[board.length];
-
-
-            for (int row = 0; row < board.length; row++)
+            for (int col=0; col < board[row].length; col++)
             {
-                for (int col = 0; col < board[row].length; col++)
-                {
-                    if (board[row][col] - '.' == 0) continue;
+                if (board[row][col] == '.') continue;
 
-                    int bit = board[row][col] - '0' - 1; // bit position
-                    int mask = 1 << bit;
-                    //check row
-                    if ((seenRows[row] &  mask) > 0) {
-                        return false;
-                    }
-                    seenRows[row] |= mask;
+                int value = board[row][col] - '0' - 1; //0-based
+                rowsCount[row][value] += 1;
+                if (rowsCount[row][value] > 1) return false;
 
-                    //check col
-                    if ((seenCols[col] & mask) > 0) {
-                        return false;
-                    }
-                    seenCols[col] |= mask;
+                colsCount[col][value] += 1;
+                if (colsCount[col][value] > 1) return false;
 
-                    //check box
-                    int boxNumber = (row / 3) * 3 + (col / 3);
-                    if ((seenBoxes[boxNumber] & mask) > 0)
-                    {
-                        return false;
-                    }
-                    seenBoxes[boxNumber] |= mask;
-                }
+                int boxId = (row / 3) * 3 + col/3;
+                boxesCount[boxId][value] += 1;
+                if (boxesCount[boxId][value] > 1) return false;  
             }
-
-            return true;
         }
+
+        return true;
+
+    }
 }
