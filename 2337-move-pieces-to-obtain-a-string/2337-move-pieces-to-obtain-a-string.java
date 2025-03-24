@@ -1,43 +1,41 @@
-class Solution {
-    public boolean canChange(String start, String target) {
-        
-        int startIdx = 0;
-        for (int i=0; i<target.length(); i++)
+class Solution {      
+    public boolean canChange(String start, String target)  // _L__R__R_    L______RR
+    {
+        final char EMPTY = '_';
+        final char L = 'L';
+        final char R = 'R';
+        int len = start.length();
+
+        int i2 = 0; //8
+        for (int i=0; i < len; i++) //7
         {
-            char targetChar = target.charAt(i);
-            if (targetChar == '_' ) 
+            char c = start.charAt(i); //R
+            if (c == EMPTY) continue;
+            
+            while (i2 < len && target.charAt(i2) == EMPTY)
             {
-                continue;
+                i2 += 1;
             }
-            else if (targetChar == 'L')
+            if (i2 == len) return false;
+            char c2 = target.charAt(i2); //R
+
+            if (c == L)
             {
-                while (startIdx < start.length() && start.charAt(startIdx) == '_')
-                {
-                    startIdx += 1;
-                }
-                if (startIdx == start.length()) return false;
-                if (start.charAt(startIdx) != 'L') return false;
-                if (startIdx < i) return false;
-                startIdx += 1;
+                if (c2 == R || i < i2) return false;
             }
             else {
-                while (startIdx < start.length() && start.charAt(startIdx) == '_')
-                {
-                    startIdx += 1;
-                }
-                if (startIdx == start.length()) return false;
-                if (start.charAt(startIdx) != 'R') return false;
-                if (startIdx > i) return false;
-                startIdx += 1;
+                if (c2 == L || i > i2) return false;
             }
+
+            i2++;
+           
         }
 
-        for (int i=startIdx; i<start.length(); i++)
+        for (int i=i2; i < len; i++)
         {
-            if (start.charAt(i) != '_') return false;
+            if (target.charAt(i) != EMPTY) return false;
         }
 
         return true;
-
     }
 }
