@@ -1,35 +1,29 @@
 class Solution {
-    Set<String> dict = new HashSet<>();
-    Map<Integer, Boolean> memo = new HashMap<>();
-    public boolean wordBreak(String s, List<String> wordDict) {
-        for (String word: wordDict)
-        {
-            dict.add(word);
-        }
 
-        return backtrack(s, 0);
+    HashSet<Integer> cache = new HashSet<>(); 
+    public boolean wordBreak(String s, List<String> wordDict) {
+
+        return rec(0, s, wordDict);
+
     }
 
-    private boolean backtrack(String s, int start)
+    private boolean rec(int idx, String s, List<String> wordDict) 
     {
-        if (memo.containsKey(start)) return memo.get(start);
+        if (cache.contains(idx)) return false;
         
-        if (start > s.length()) return false;
-        if (start == s.length()) return true;
+        if (idx == s.length()) return true;
+        // if (idx > s.length()) return false;
 
-        for (int end=s.length(); end >= start+1; end--)
+        for (String chunk: wordDict)
         {
-            if (dict.contains(s.substring(start, end)))
+            if (idx + chunk.length() -1 < s.length() && s.substring(idx, idx + chunk.length()).equals(chunk))
             {
-                if (backtrack(s, end)) {
-                    memo.put(start, true);
-                    return true;
-                }
+                if (rec(idx + chunk.length(), s, wordDict)) return true;
             }
         }
 
-        memo.put(start, false);
+        cache.add(idx);
+
         return false;
     }
-
 }
