@@ -1,23 +1,25 @@
 class Solution {
     public int maxArea(int[] height) {
-        int largestVolume = 0;
-        int pointerL = 0;
-        int pointerR = height.length -1;
+        
+        int l = 0; 
+        int r = height.length - 1; 
+        int volume = 0; 
 
-        while (pointerL < pointerR)
+        while (l < r)
         {
-            final int heightL = height[pointerL];
-            final int heightR = height[pointerR];
-            largestVolume = Math.max(largestVolume, Math.abs(pointerL - pointerR) * Math.min(heightL, heightR));
+            int heightL = height[l];
+            int heightR = height[r]; 
 
-            if (heightL < height[pointerR])
+            volume = Math.max(volume, (r - l) * Math.min(heightL, heightR));
+
+            if (heightL < heightR)
             {
-                pointerL++;
+                l++;
             } else {
-                pointerR--;
+                r--;
             }
         }
 
-        return largestVolume;
+        return volume;
     }
 }
