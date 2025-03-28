@@ -1,36 +1,39 @@
 class Solution {
     public List<List<Integer>> threeSum(int[] nums) {
-        Arrays.sort(nums);
-
-        List<List<Integer>> result = new ArrayList<>();
-        HashSet<Integer> thirdSet = new HashSet<>();
+        Set<List<Integer>> result = new HashSet<>();
+        // Set<Integer> starts = new HashSet<>();
+        HashMap<Integer, Integer> startsMap = new HashMap<>();
 
         for (int i=0; i<nums.length; i++)
         {
-            if (i > 0 && nums[i] == nums[i-1]) continue;
-            int first = nums[i];
-            thirdSet.clear();
+            // if (starts.contains(nums[i]))
+            // {
+            //     continue;
+            // }
+            // starts.add(nums[i]);
+            if (startsMap.containsKey(nums[i]) && startsMap.get(nums[i]) == i)
+            {
+                continue;
+            }
+            startsMap.put(nums[i], i);
+
+            Set<Integer> matching = new HashSet<>();
             for (int j=i+1; j<nums.length; j++)
             {
-                int curr = nums[j]; //second or third
-                if (thirdSet.contains(curr))
+                if (matching.contains(nums[j]))
                 {
-                    // third
-                    List<Integer> triplet = new ArrayList<>();
-                    triplet.add(first);
-                    triplet.add(0 - first - curr);
-                    triplet.add(curr);
-                    result.add(triplet);
+                    List<Integer> subResult = new ArrayList<>();
+                    subResult.add(nums[i]);
+                    subResult.add(nums[j]);
+                    subResult.add(-nums[i] - nums[j]);
+                    Collections.sort(subResult);
+                    result.add(subResult);
+                } 
 
-                    thirdSet.remove(curr);
-                } else {
-                    //second
-                    if (j > i+1 && curr == nums[j-1]) continue;
-                    thirdSet.add( 0 - first - curr);
-                }
+                matching.add(-nums[i] -nums[j]);
             }
         }
 
-        return result;
+        return new ArrayList<>(result);
     }
 }
