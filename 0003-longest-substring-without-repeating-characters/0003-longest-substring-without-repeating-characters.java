@@ -1,34 +1,36 @@
 class Solution {
-        public int lengthOfLongestSubstring(String s) {
-            final HashMap<Character, Integer> positions = new HashMap<>();
+    public int lengthOfLongestSubstring(String s) {   //tmmzuxt
+                                                      //  ^
+                                                       //  ^
+        if (s.length() == 0) return 0;
+        if (s.length() == 1) return 1;
 
-            if (s.length() == 0) return 0;
-
-            int start = 0;
-            positions.put(s.charAt(0), 0);
-            int end = 1;
-            int maxSize = 1;
-
-            while (end < s.length())
+        Set<Character> seen = new HashSet<>();
+        seen.add(s.charAt(0));
+        int left = 0;
+        int right = left + 1;
+        int result = 1;
+        while (right < s.length())
+        {
+            while (right < s.length() && !seen.contains(s.charAt(right)))
             {
-                final Integer seenIndex = positions.get(s.charAt(end));
-
-                if (seenIndex != null && seenIndex >= start)
-                {
-                    start = seenIndex+1;
-                }
-
-                positions.put(s.charAt(end), end);
-                maxSize = Math.max(maxSize, end - start + 1);
-
-
-                end++;
-
-
+                seen.add(s.charAt(right));
+                right++;
             }
+            result = Math.max(result, right - left);
+            if (right == s.length()) return result;
 
-            return maxSize;
+            while (s.charAt(left) != s.charAt(right))
+            {
+                seen.remove(s.charAt(left));
+                left++;
+            }
+            left++;
+            right++;
+
         }
-    
-    
+
+        return result;
+        
+    }
 }
