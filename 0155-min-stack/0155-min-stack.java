@@ -1,29 +1,30 @@
 class MinStack {
-    LinkedList<int[]> stack;
+    int[][] stack;
+    int idx = -1;
 
     public MinStack() {
-        stack = new LinkedList<>();
+        stack = new int[30000][2];
     }
     
     public void push(int val) {
         int min = val;
-        if (stack.size() > 0 && stack.peek()[1] < min)
-        {
-            min = stack.peek()[1];
-        }
-        stack.push(new int[] {val, min});
+        if (idx >= 0 && stack[idx][1] < min) min = stack[idx][1];
+
+        idx += 1;
+        stack[idx][0] = val;
+        stack[idx][1] = min;
     }
     
     public void pop() {
-        stack.pop();
+        idx -= 1;
     }
     
     public int top() {
-        return stack.peek()[0];
+        return stack[idx][0];
     }
     
     public int getMin() {
-        return stack.peek()[1];
+        return stack[idx][1];
     }
 }
 
