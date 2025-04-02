@@ -1,44 +1,24 @@
 class Solution {
     public boolean isValid(String s) {
-        LinkedList<Character> bracketsStack = new LinkedList<>();
 
-        for (int i=0; i < s.length(); i++)
+        LinkedList<Character> stack = new LinkedList<>();
+
+        for (int i=0; i<s.length(); i++)
         {
-            Character current = s.charAt(i);
-            if (Set.of('(','[','{').contains(current))
+            char c = s.charAt(i);
+            if (c == '(' || c == '{' || c == '[')
             {
-                bracketsStack.push(current);
-            }
-            else if (current.equals(')') || current.equals(']') || current.equals('}'))
-            {
-                Character prevBracket = bracketsStack.peek();
-                if (prevBracket == null)
-                {
-                    return false;
-                }
-
-                if (current.equals(getCloseBracket(prevBracket)))
-                {
-                    bracketsStack.pop();
-                } else {
-                    return false;
-                }
+                stack.push(c);
+            } else {
+                if (stack.size() == 0) return false;
+                char pop = stack.pop();
+                if (c == ')' && pop != '(') return false;
+                if (c == '}' && pop != '{') return false;
+                if (c == ']' && pop != '[') return false;
             }
         }
 
-        if (bracketsStack.peek() != null)
-        {
-            return false;
-        }
+        return stack.size() == 0;
 
-        return true;
-    }
-
-    private Character getCloseBracket(Character openBracket)
-    {
-        if (openBracket.equals('(')) return ')';
-        if (openBracket.equals('[')) return ']';
-        if (openBracket.equals('{')) return '}';
-        return null;
     }
 }
