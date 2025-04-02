@@ -1,35 +1,29 @@
 class MinStack {
-
-    LinkedList<Integer> mainStack = new LinkedList<>();
-    LinkedList<Integer> minStack = new LinkedList<>();
+    LinkedList<int[]> stack;
 
     public MinStack() {
-
+        stack = new LinkedList<>();
     }
-
+    
     public void push(int val) {
-        mainStack.push(val);
-        if (minStack.peek() == null || minStack.peek() >= val) {
-            minStack.push(val);
+        int min = val;
+        if (stack.size() > 0 && stack.peek()[1] < min)
+        {
+            min = stack.peek()[1];
         }
+        stack.push(new int[] {val, min});
     }
-
+    
     public void pop() {
-        if (mainStack.size() == 0)
-            return;
-
-        int popped = mainStack.pop();
-        if (minStack.peek() == popped) {
-            minStack.pop();
-        }
+        stack.pop();
     }
-
+    
     public int top() {
-        return mainStack.peek();
+        return stack.peek()[0];
     }
-
+    
     public int getMin() {
-        return minStack.peek();
+        return stack.peek()[1];
     }
 }
 
