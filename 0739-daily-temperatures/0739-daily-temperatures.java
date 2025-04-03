@@ -1,24 +1,29 @@
 class Solution {
-    public int[] dailyTemperatures(int[] temperatures)
-    {
-        LinkedList<Integer> decreasingStack = new LinkedList<>();
-        int[] result = new int[temperatures.length];
+    public int[] dailyTemperatures(int[] temperatures) { // 73 74 75 71 69 72 76 73
 
-        decreasingStack.add(0);
+        int[] result = new int[temperatures.length]; // 1 2 4 2 1 1 0 0
 
-        for (int i = 1; i < temperatures.length; i++)
+        LinkedList<int[]> stack = new LinkedList<>(); // 76,6 73,7
+        stack.push(new int[] {temperatures[0], 0});
+        
+        for (int i=1; i<temperatures.length; i++)
         {
-
-            while (decreasingStack.size() > 0 && temperatures[decreasingStack.peek()] < temperatures[i])
+            int temp = temperatures[i]; 
+            while (stack.size() > 0 && stack.peek()[0] < temp)
             {
-                int lower = decreasingStack.pop();
-                result[lower] = i - lower;
-
+                int[] pop = stack.pop();
+                result[pop[1]] = i - pop[1];                
             }
-            decreasingStack.push(i);
+            stack.push(new int[] {temp, i});
+        }
 
+        while (stack.size() > 0)
+        {
+            int[] pop = stack.pop();
+            result[pop[1]] = 0;
         }
 
         return result;
+            
     }
 }
