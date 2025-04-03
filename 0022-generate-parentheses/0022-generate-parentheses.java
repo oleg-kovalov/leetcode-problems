@@ -1,31 +1,33 @@
 class Solution {
-    private List<String> result;
+    List<String> result = new ArrayList<>();
+    int open = 0; // 2
 
     public List<String> generateParenthesis(int n) {
-        result = new ArrayList<>();
 
-        generateParenthesisBacktrack(new StringBuilder(), n, n);
+        backtrack('(', new StringBuilder(), n * 2 - 1);
 
-        return result;
+        return result;    
     }
 
-    private void generateParenthesisBacktrack(StringBuilder str, int left, int right)
+    private void backtrack(char curr, StringBuilder builder, int n) 
     {
-        if (left == 0 && right == 0)
-        {
-            result.add(str.toString());
-            return;
-        }
+        if (n < 0 || open < 0) return;
 
-        if (left > 0)
+        open += (curr == '(') ? 1 : -1;
+
+        builder.append(curr);
+
+
+        if (n == 0 && open == 0) 
         {
-            generateParenthesisBacktrack(str.append("("), left-1, right);
-            str.deleteCharAt(str.length()-1);
-        }
-        if (right > 0 && left < right)
-        {
-            generateParenthesisBacktrack(str.append(")"), left, right-1);
-            str.deleteCharAt(str.length()-1);
-        }
+            result.add(builder.toString());
+        } 
+
+        backtrack('(', builder, n - 1);
+        backtrack(')', builder, n - 1);
+
+        builder.deleteCharAt(builder.length() - 1);
+        open -= (curr == '(') ? 1 : -1;
+        
     }
 }
