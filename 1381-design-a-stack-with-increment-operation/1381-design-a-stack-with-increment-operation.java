@@ -1,36 +1,36 @@
-    class CustomStack {
+class CustomStack {
 
-        int[] array;
-        int pointer;
+    private int[] arr;
+    private int index;
+    private int maxSize;
+
+    public CustomStack(int maxSize) {
+        arr = new int[maxSize];
+        this.maxSize = maxSize;
+        index = 0;
+    }
+    
+    public void push(int x) {
+        if (index == maxSize) return;
+
+        arr[index] = x;
+        index += 1;
+    }
+    
+    public int pop() {
+        if (index == 0) return -1;
         
-        public CustomStack(int maxSize) {
-            array = new int[maxSize];
-            Arrays.fill(array, -1);
-            pointer = -1;
-        }
-
-        public void push(int x) {
-            if (pointer == array.length-1) return;
-            
-            pointer++;
-            array[pointer] = x;
-        }
-
-        public int pop() {
-            if (pointer == -1) return -1;
-            pointer--;
-            return array[pointer+1];
-        }
-
-        public void increment(int k, int val) {
-            if (pointer == -1) return;
-            
-            for (int i=0; i <= Math.min(pointer, k-1); i++)
-            {
-                array[i] += val;
-            }
+        
+        return arr[--index];
+    }
+    
+    public void increment(int k, int val) {
+        for (int i=0; i<Math.min(k, index); i++)
+        {
+            arr[i] += val;
         }
     }
+}
 
 /**
  * Your CustomStack object will be instantiated and called as such:
