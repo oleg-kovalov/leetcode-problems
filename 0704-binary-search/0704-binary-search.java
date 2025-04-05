@@ -1,38 +1,29 @@
 class Solution {
     public int search(int[] nums, int target) {
+        if (nums.length == 1) return nums[0] == target ? 0 : -1;
 
-        return search(0, nums.length-1, nums, target);
+        int lo = 0;
+        int hi = nums.length - 1;
 
-    }
-    private int search(int start, int end, int[] nums, int target)
-    {
-        // System.out.println("start " + start + " end " + end);
-        if (end - start <= 1)
+        while (lo <= hi)
         {
-            if (nums[start] == target)
+            int mid = lo + (hi - lo) / 2;
+
+            if (nums[mid] < target)
             {
-                return start;
-            }
-            else if (nums[end] == target)
+                lo = mid + 1;
+            } else if (nums[mid] > target)
             {
-                return end;
+                hi = mid - 1;
             }
-            else {
-                return -1;
+            else
+            {
+                return mid;
             }
         }
 
-        int mid = (end + start) / 2;
+        return -1;
 
-        if (nums[mid] < target)
-        {
-            return search(mid, end, nums, target);
-        }
-        else if (nums[mid] > target)
-        {
-            return search(start, mid, nums, target);
-        } else {
-            return mid;
-        }
+
     }
 }
