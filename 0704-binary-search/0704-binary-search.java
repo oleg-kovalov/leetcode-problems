@@ -1,6 +1,5 @@
 class Solution {
     public int search(int[] nums, int target) {
-        if (nums.length == 1) return nums[0] == target ? 0 : -1;
 
         int lo = 0;
         int hi = nums.length - 1;
