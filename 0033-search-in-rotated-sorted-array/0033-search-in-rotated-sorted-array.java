@@ -2,64 +2,68 @@ class Solution {
     public int search(int[] nums, int target) {
         if (nums.length == 1) return nums[0] == target ? 0 : -1;
 
-        int pivot = findPivot(nums);
+        int maxId = findMaxId(nums);
+        if (maxId == -1) return -1; //should never happen
 
-        if (target == nums[pivot])
+        if (nums[0] <= target && target <= nums[maxId])
         {
-            return pivot;
-        } 
-        if (target >= nums[0] && pivot > 0)
+            return search(nums, target, 0, maxId);
+        } else if (maxId < nums.length - 1 && nums[maxId+1] <= target && target <= nums[nums.length - 1])
         {
-            return search(nums, 0, pivot-1, target);
+            return search(nums, target, maxId+1, nums.length - 1);
+        } else 
+        {
+            return -1;
         }
-
-        return search(nums, pivot, nums.length-1, target);
-
     }
 
-    private int search(int[] nums, int left, int right, int target)
+    private int search(int[] nums, int target, int lo, int hi)
     {
-        while (left <= right)
+        while (lo <= hi)
         {
-            int mid = (left + right) / 2;
-            if (nums[mid] == target)
+            int mid = lo + (hi - lo) / 2;
+
+            if (nums[mid] < target)
+            {
+                lo = mid + 1;
+            } else if (nums[mid] > target)
+            {
+                hi = mid - 1;
+            } else {
+                return mid;
+            }
+        }
+
+        return -1;
+    }
+
+    private int findMaxId(int[] nums)
+    {
+        if (nums[0] < nums[nums.length - 1]) return nums.length - 1;
+
+        int first = nums[0];
+        int lo = 0;
+        int hi = nums.length - 2;
+
+        while (lo <= hi)
+        {
+            int mid = lo + (hi - lo) / 2;
+            
+            if (nums[mid] > nums[mid + 1])
             {
                 return mid;
-            } else if (nums[mid] < target)
+            }
+
+            if (nums[mid] >= first)
             {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
+                lo = mid + 1;
+            } else if (nums[mid] < first) {
+                hi = mid - 1;
             }
         }
 
         return -1;
+
     }
 
-    private int findPivot(int[] nums)
-    {
-        if (nums[0] < nums[nums.length-1]) return 0;
-
-        int left = 0;
-        int right = nums.length -1;
-
-        while (left <= right)
-        {
-            int mid = (left + right) / 2;
-
-            if (nums[mid] > nums[mid+1])
-            {
-                return mid+1;
-            } else {
-                if (nums[mid] >= nums[left])
-                {
-                    left = mid + 1;
-                } else {
-                    right = mid - 1;
-                }
-            }
-        }
-
-        return -1;
-    }
 }
