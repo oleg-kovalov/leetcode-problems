@@ -11,7 +11,7 @@ class TimeMap {
         timestamps.putIfAbsent(key, new ArrayList<>());
         timestamps.get(key).add(timestamp);
 
-        values.put(key + timestamp, value);
+        values.put(key + "_" +timestamp, value);
     }
     
     public String get(String key, int timestamp) {
@@ -36,7 +36,7 @@ class TimeMap {
         }
         if (result == -1) return "";
 
-        return values.get(key + list.get(result));
+        return values.get(key + "_" + list.get(result));
     }
 }
 
