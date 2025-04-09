@@ -1,46 +1,42 @@
 class TimeMap {
 
-    Map<String, List<Integer>> keyToTimestamps;
-    Map<Integer, String> timestampToValue;
-
+    Map<String, List<Integer>> timestamps = new HashMap<>();
+    Map<String, String> values = new HashMap<>();
 
     public TimeMap() {
-        keyToTimestamps = new HashMap<>();
-        timestampToValue = new HashMap<>();
+        
     }
     
     public void set(String key, String value, int timestamp) {
-        keyToTimestamps.putIfAbsent(key, new ArrayList<>());
-        keyToTimestamps.get(key).add(timestamp);
+        timestamps.putIfAbsent(key, new ArrayList<>());
+        timestamps.get(key).add(timestamp);
 
-        timestampToValue.put(timestamp, value);
+        values.put(key + timestamp, value);
     }
     
     public String get(String key, int timestamp) {
-        List<Integer> list = keyToTimestamps.get(key);
-        if (list == null || list.size() == 0) return "";
-        
-        int resultTimestamp = -1;
+        if (!timestamps.containsKey(key)) return "";
 
+        List<Integer> list = timestamps.get(key);
         int lo = 0;
         int hi = list.size() - 1;
+
+        int result = -1;
         while (lo <= hi)
         {
-            int mid = (hi + lo) / 2;
+            int mid = lo + (hi - lo) / 2;
 
             if (list.get(mid) <= timestamp)
             {
-                resultTimestamp = list.get(mid);
+                result = mid;
                 lo = mid + 1;
             } else {
                 hi = mid - 1;
             }
         }
+        if (result == -1) return "";
 
-        if (resultTimestamp == -1) return "";
-
-        return timestampToValue.get(resultTimestamp);
-
+        return values.get(key + list.get(result));
     }
 }
 
