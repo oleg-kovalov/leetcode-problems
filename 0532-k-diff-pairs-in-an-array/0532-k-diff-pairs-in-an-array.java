@@ -10,11 +10,11 @@ class Solution {
             for (int i=0; i<nums.length; i++)
             {
                 int num = nums[i];
-                int lower = search(nums, i+1, nums.length -1, num - k);
-                if (lower >= 0)
-                {
-                    set.add(nums[lower] + "-" + num);
-                }
+                // int lower = search(nums, i+1, nums.length -1, num - k);
+                // if (lower >= 0)
+                // {
+                //     set.add(nums[lower] + "-" + num);
+                // }
 
                 int upper = search(nums, i+1, nums.length - 1, num + k);
                 if (upper >= 0)
@@ -23,7 +23,7 @@ class Solution {
                 }
             }
 
-            System.out.println(set);
+            // System.out.println(set);
             return set.size();
 
     }
