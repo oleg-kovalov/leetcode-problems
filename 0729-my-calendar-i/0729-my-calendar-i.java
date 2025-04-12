@@ -7,14 +7,15 @@ class MyCalendar {
     }
     
     public boolean book(int startTime, int endTime) {
-        // check intersecrion with earlier event
+        // intersection would be if condition holds
+        // existingStart < newEnd && newStart < existingEnd
         int leftId = -1;
         int lo = 0;
         int hi = events.size() - 1;
         while (lo <= hi)
         {
             int mid = lo + (hi - lo) / 2;
-            if (events.get(mid)[0] <= startTime)
+            if (events.get(mid)[0] < endTime)
             {
                 leftId = mid;
                 lo = mid + 1;
@@ -23,23 +24,6 @@ class MyCalendar {
             }
         }
         if (leftId != -1 && startTime < events.get(leftId)[1]) return false;
-
-        int rightId = -1;
-        lo = 0;
-        hi = events.size() - 1;
-        while (lo <= hi)
-        {
-            int mid = lo + (hi - lo) / 2;
-            if (events.get(mid)[0] >= startTime)
-            {
-                rightId = mid;
-                hi = mid - 1;
-            } else {
-                lo = mid + 1;
-            }
-        }
-
-        if (rightId != -1 && endTime > events.get(rightId)[0]) return false;
 
         events.add(leftId+1, new int[] {startTime, endTime});
         return true;
