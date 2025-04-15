@@ -1,31 +1,33 @@
 class Solution {
-    public boolean checkInclusion(String s1, String s2) {
+    public boolean checkInclusion(String s1, String s2) { //ab  cdba
         if (s2.length() < s1.length()) return false;
-        
-        int[] target = new int[26];
-        
-        for (char ch: s1.toCharArray())
+
+        int[] freq1 = new int[26]; //[1 1 0 0]
+        for (int i=0; i<s1.length(); i++)
         {
-            target[ch - 'a'] += 1;
-        }
-        
-        int[] current = new int[26];
-        for (int i=0; i < s1.length(); i++)
-        {
-            char ch = s2.charAt(i);
-            current[ch - 'a'] += 1;
+            freq1[s1.charAt(i) - 'a'] += 1;
         }
 
-        if (Arrays.equals(target, current)) return true;
-
-        for (int start=1; start + s1.length() - 1 < s2.length(); start++)
+        int[] freq2 = new int[26]; // [1 1 0 0]
+        for (int i=0; i<s1.length(); i++)
         {
-            current[s2.charAt(start - 1) - 'a'] -= 1;
-            current[s2.charAt(start + s1.length() - 1) - 'a'] += 1;
+            freq2[s2.charAt(i) - 'a'] += 1;
+        }
+        if (Arrays.equals(freq1, freq2)) return true;
 
-            if (Arrays.equals(target, current)) return true;
+        int left = 1; // 2
+
+        while (left + s1.length() - 1 < s2.length())
+        {
+            freq2[s2.charAt(left - 1) - 'a'] -= 1;
+            freq2[s2.charAt(left + s1.length() - 1) - 'a'] += 1;
+
+            if (Arrays.equals(freq1, freq2)) return true;
+
+            left += 1;
         }
 
         return false;
+
     }
 }
