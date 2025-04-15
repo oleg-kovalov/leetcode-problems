@@ -1,38 +1,36 @@
 class Solution {
-    public int characterReplacement(String s, int k) { 
+    public int characterReplacement(String s, int k) {
+        
+        int result = k;
 
-        Set<Character> chars = new HashSet<>();
-        for (char c: s.toCharArray())
+        int[] count = new int[26]; 
+        int left = 0;
+        int size = 1;
+
+        while (left + size - 1 < s.length())
         {
-            chars.add(c);
-        }
+            count[s.charAt(left + size - 1) - 'A'] += 1;
 
-
-        int result = 0; 
-        for (char c: chars)
-        {
-            int remK = k; 
-            int left = 0;
-            for (int right = 0; right < s.length(); right++)
+            int maxCount = 0;
+            for (int c: count)
             {
-                char rightC = s.charAt(right);
-                while (rightC != c && remK == 0 && left <= right)
-                {
-                    if (s.charAt(left) != c){
-                        remK += 1;
-                    }
-                    left += 1;
-                }
-                if (rightC != c)
-                {
-                    remK -= 1;
-                }
-                result = Math.max(result, right - left + 1);
+                maxCount = Math.max(maxCount, c);
+            }
+
+            if (maxCount + k >= size)
+            {
+                result = Math.max(result, size);
+                size += 1;
+            } else {
+                count[s.charAt(left) - 'A'] -= 1;
+                left += 1;
             }
         }
 
+
+
         return result;
 
-
+                
     }
 }
