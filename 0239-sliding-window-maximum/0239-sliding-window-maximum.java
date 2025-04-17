@@ -14,12 +14,12 @@ class Solution {
         int left = 1;
         while (left + k - 1 < nums.length)
         {
-            maxHeap.offer(new int[] {nums[left + k - 1], left + k - 1});
-
-            while (maxHeap.peek()[1] < left) 
+            while (maxHeap.size() > 0 && maxHeap.peek()[1] < left) 
             {
                 maxHeap.poll();
             }
+
+            maxHeap.offer(new int[] {nums[left + k - 1], left + k - 1});
 
             result[left] = maxHeap.peek()[0];
             left += 1;
