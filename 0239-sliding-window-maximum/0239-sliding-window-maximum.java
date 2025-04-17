@@ -14,7 +14,7 @@ class Solution {
         int left = 1;
         while (left + k - 1 < nums.length)
         {
-            while (maxHeap.size() > 0 && maxHeap.peek()[1] < left) 
+            while (maxHeap.size() > 0 && (maxHeap.peek()[1] < left || maxHeap.peek()[0] <= nums[left + k - 1])) 
             {
                 maxHeap.poll();
             }
