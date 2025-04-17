@@ -6,6 +6,10 @@ class Solution {
 
         for (int i=0; i<k; i++)
         {
+            while (maxHeap.size() > 0 && maxHeap.peek()[0] <= nums[i])
+            {
+                maxHeap.poll();
+            } 
             maxHeap.offer(new int[] {nums[i], i});
         }
 
