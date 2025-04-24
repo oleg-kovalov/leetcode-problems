@@ -1,30 +1,55 @@
 class Solution {
     public int[] fullBloomFlowers(int[][] flowers, int[] people) { //[1,10][3,3]  , [3,3,2]
-        int maxFlowerTime = 0; //10
-        for (int[] flower: flowers)
+
+        int[] starts = new int[flowers.length];
+        int[] ends = new int[flowers.length];
+
+        for (int i=0; i<flowers.length; i++)
         {
-            maxFlowerTime = Math.max(maxFlowerTime, flower[1]);
+            starts[i] = flowers[i][0];
+            ends[i] = flowers[i][1];
+        }
+        
+
+        Arrays.sort(starts);
+        Arrays.sort(ends);
+
+        int[] result = new int[people.length];
+
+        for (int i=0; i<result.length; i++)
+        {
+            int startCount = findEventsBefore(starts, people[i]);
+            int endCount = findEventsBefore(ends, people[i] - 1);
+            System.out.println(startCount + " "+ endCount);
+            result[i] = startCount - endCount;            
         }
 
-        int[] diff = new int[maxFlowerTime + 2]; // 0 1 0 1 -1 0 0 0 0 0 -1 
-        for (int[] flower: flowers)
+        return result;
+    }
+
+    private int findEventsBefore(int[] starts, int time)
+    {
+        // find smallest index that has value larger than time
+        // return count of elems before that index 
+        if (time <= 0) return 0;
+
+        int lo=0; 
+        int hi = starts.length - 1;
+        int result = starts.length;
+
+        while (lo <= hi)
         {
-            diff[flower[0]] += 1;
-            diff[flower[1] + 1] -= 1;
+            int mid = lo + (hi - lo) / 2;
+            if (starts[mid] > time)
+            {
+                result = mid;
+                hi = mid - 1;
+            } else {
+                lo = mid + 1;
+            }
         }
 
-        int[] sum = new int[diff.length]; // 0 1 1 2 1 1 1 1 1 1 0
-        for (int i=0; i< sum.length; i++)
-        {
-            sum[i] = (i > 0 ? sum[i-1] : 0) + diff[i];        
-        } 
-
-        int[] result = new int[people.length]; // 2 2 1
-        for (int i=0; i<people.length; i++)
-        {
-            int time = people[i];
-            if (time <= maxFlowerTime) result[i] = sum[people[i]];
-        }
+        if (result == -1) return 0;
 
         return result;
     }
