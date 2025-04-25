@@ -44,6 +44,7 @@ class Solution {
 
     class DSU 
     {
+        Map<String, Integer> rankMap = new HashMap<>();
 
         public DSU(List<List<String>> accounts)
         {
@@ -52,6 +53,7 @@ class Solution {
                 for (int i=1; i<account.size(); i++)
                 {
                     parentMap.put(account.get(i), account.get(i));
+                    rankMap.put(account.get(i), 0);
                 }
             }
         }
@@ -61,10 +63,23 @@ class Solution {
             String parent1 = find(email1);
             String parent2 = find(email2);
 
-            if (!parent1.equals(parent2))
+            if (parent1.equals(parent2))
+            {
+                return;
+            }
+
+            int rank1 = rankMap.get(email1);
+            int rank2 = rankMap.get(email2);
+            if (rank1 < rank2)
             {
                 parentMap.put(parent1, parent2);
+            } else if (rank1 > rank2) {
+                parentMap.put(parent2, parent1);
+            } else {
+                parentMap.put(parent2, parent1);
+                rankMap.put(parent1, rankMap.get(parent1) + 1);
             }
+
         }
 
         public String find(String current)
