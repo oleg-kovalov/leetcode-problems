@@ -9,39 +9,60 @@
  * }
  */
 class Solution {
-    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
-        ListNode fakeHead = new ListNode();
-        merge(fakeHead, list1, list2);
+    public ListNode mergeTwoLists(ListNode listNode1, ListNode listNode2)
+    {
+        final ListNode resHead;
+        if (listNode1 == null && listNode2 == null)
+        {
+            return null;
+        }
+        else if (listNode1 == null)
+        {
+            return listNode2;
+        }
+        else if (listNode2 == null)
+        {
+            return listNode1;
+        }
+        else if (listNode1.val < listNode2.val)
+        {
+            resHead = new ListNode(listNode1.val);
+            mergeNode(listNode1.next, listNode2, resHead);
+        }
+        else {
+            resHead = new ListNode(listNode2.val);
+            mergeNode(listNode1, listNode2.next, resHead);
+        }
 
-        return fakeHead.next;
+        return resHead;
+
     }
 
-
-    private void merge(ListNode curr, ListNode node1, ListNode node2)
+    private void mergeNode (ListNode listNode1, ListNode listNode2, ListNode resNode)
     {
-        if (node1 == null && node2 == null) return;
-
-        if (node1 == null)
+        if (listNode1 == null && listNode2 == null)
         {
-            curr.next = new ListNode(node2.val);
-            merge(curr.next, node1, node2.next);
             return;
         }
-
-        if (node2 == null)
+        else if (listNode1 == null)
         {
-            curr.next = new ListNode(node1.val);
-            merge(curr.next, node1.next, node2);
-            return;
+            resNode.next = new ListNode(listNode2.val);
+            mergeNode(listNode1, listNode2.next, resNode.next);
         }
-
-        if (node1.val <= node2.val)
+        else if (listNode2 == null)
         {
-            curr.next = new ListNode(node1.val);
-            merge(curr.next, node1.next, node2);
-        } else {
-            curr.next = new ListNode(node2.val);
-            merge(curr.next, node1, node2.next);
+            resNode.next = new ListNode(listNode1.val);
+            mergeNode(listNode1.next, listNode2, resNode.next);
+        }
+        else if (listNode1.val < listNode2.val)
+        {
+            resNode.next = new ListNode(listNode1.val);
+            mergeNode(listNode1.next, listNode2, resNode.next);
+        }
+        else
+        {
+            resNode.next = new ListNode(listNode2.val);
+            mergeNode(listNode1, listNode2.next, resNode.next);
         }
 
     }
