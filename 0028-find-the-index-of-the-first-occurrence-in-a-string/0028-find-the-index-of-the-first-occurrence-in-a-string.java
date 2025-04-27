@@ -1,21 +1,52 @@
 class Solution {
     public int strStr(String haystack, String needle) {
-        
-        for (int i=0; i < haystack.length() - needle.length() + 1; i++)
+        int[] lps = new int[needle.length()];
+
+        int prevLPS = 0;
+        int i = 1;
+
+        // AAA
+
+
+        while (i < lps.length)
         {
-            for (int j=i; j < i + needle.length(); j++ )
+            if (needle.charAt(i) == needle.charAt(prevLPS))
             {
-                if (haystack.charAt(j) != needle.charAt(j-i))
+                lps[i] = prevLPS + 1;
+                prevLPS += 1;
+                i += 1; 
+            } else if (prevLPS == 0)
+            {
+                lps[i] = 0;
+                i += 1;
+            } else {
+                prevLPS = lps[prevLPS - 1];    
+            }
+        }
+
+        int h = 0;
+        int n = 0;
+
+        while (h < haystack.length())
+        {
+            if (haystack.charAt(h) == needle.charAt(n))
+            {
+                h += 1;
+                n += 1;
+                if (n == needle.length()) return h - needle.length();
+            } else
+            {
+                if (n == 0)
                 {
-                    break;
-                }
-                if (j == i + needle.length() -1 )
-                {
-                    return i;
+                    h += 1;
+                } else {
+                    n = lps[n - 1];
                 }
             }
         }
 
         return -1;
+
+
     }
 }
