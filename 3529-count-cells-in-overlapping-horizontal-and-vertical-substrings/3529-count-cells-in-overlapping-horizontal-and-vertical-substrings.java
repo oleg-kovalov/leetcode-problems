@@ -6,6 +6,7 @@ class Solution {
         int[] diffver = new int[rows * cols + 1];
         int[] diffhor = new int[rows * cols + 1];
 
+        int[] lps = buildLPS(pattern);
 
         StringBuilder strHor = new StringBuilder();
         for (int row=0; row < rows; row++)
@@ -13,13 +14,13 @@ class Solution {
             strHor.append(grid[row]); 
         }
 
-        List<Integer> horMatchStarts = kmp(strHor.toString(), pattern);
+        List<Integer> horMatchStarts = kmp(strHor, pattern, lps);
         for (int start: horMatchStarts)
         {
             diffhor[start] += 1;
             diffhor[start + pattern.length()] -= 1;
         }
-        System.out.println(Arrays.toString(diffhor));
+        // System.out.println(Arrays.toString(diffhor));
 
 
         StringBuilder strVer = new StringBuilder();
@@ -31,13 +32,13 @@ class Solution {
             }
         }
 
-        List<Integer> verMatchStarts = kmp(strVer.toString(), pattern);
+        List<Integer> verMatchStarts = kmp(strVer, pattern, lps);
         for (int start: verMatchStarts)
         {
             diffver[start] += 1;
             diffver[start + pattern.length()] -= 1;
         }
-        System.out.println(Arrays.toString(diffver));
+        // System.out.println(Arrays.toString(diffver));
 
 
         for (int i=1; i< diffver.length; i++)
@@ -64,28 +65,9 @@ class Solution {
         
     }
 
-    private List<Integer> kmp(String haystack, String needle)
+    private List<Integer> kmp(StringBuilder haystack, String needle, int[] lps)
     {
         List<Integer> result = new ArrayList<>(); // list of startings indices of matches
-        int[] lps = new int[needle.length()];
-
-        int prevLPS = 0;
-        int i = 1;
-        while (i < lps.length)
-        {
-            if (needle.charAt(i) == needle.charAt(prevLPS))
-            {
-                lps[i] = prevLPS + 1;
-                prevLPS += 1;
-                i += 1; 
-            } else if (prevLPS == 0)
-            {
-                lps[i] = 0;
-                i += 1;
-            } else {
-                prevLPS = lps[prevLPS - 1];    
-            }
-        }
 
         int h = 0;
         int n = 0;
@@ -114,5 +96,32 @@ class Solution {
         }
 
         return result;
+    }
+
+    private int[] buildLPS(String needle)
+    {
+        int[] lps = new int[needle.length()];
+
+        int prevLPS = 0;
+        int i=1;
+
+        while (i < needle.length())
+        {
+            if (needle.charAt(i) == needle.charAt(prevLPS))
+            {
+                lps[i] = prevLPS + 1;
+                prevLPS += 1;
+                i+= 1;
+            } else if (prevLPS > 0)
+            {
+                prevLPS = lps[prevLPS - 1];
+            } else 
+            {
+                lps[i] = 0;
+                i += 1;
+            }
+        }
+
+        return lps;
     }
 }
