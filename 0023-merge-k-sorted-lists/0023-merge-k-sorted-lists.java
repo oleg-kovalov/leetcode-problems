@@ -9,49 +9,48 @@
  * }
  */
 class Solution {
-        public ListNode mergeKLists(ListNode[] lists)
+    public ListNode mergeKLists(ListNode[] lists) {
+        
+        LinkedList<ListNode> queue = new LinkedList<>();
+        for (ListNode node: lists)
         {
-            int interval = 1;
-            while (interval < lists.length)
-            {
-                for (int i=0; i < lists.length; i += 2 * interval)
-                {
-                    lists[i] = mergeLists(lists[i], 
-                        i + interval < lists.length ? lists[i + interval] : null);
-                }
-                
-                interval *= 2;
-            }
-            
-            return lists.length == 0 ? null : lists[0];
+            queue.offer(node);
         }
 
-        private ListNode mergeLists(ListNode left, ListNode right)
+        while (queue.size() > 1)
         {
-            ListNode head = new ListNode();
-            ListNode curr = head;
-            while (left != null || right != null)
-            {
-                if (left == null) {
-                    curr.next = right;
-                    right = right.next;
-                } else if (right == null)
-                {
-                    curr.next = left;
-                    left = left.next;
-                } else {
-                    if (left.val <= right.val)
-                    {
-                        curr.next = left;
-                        left = left.next;
-                    } else {
-                        curr.next = right;
-                        right = right.next;
-                    }
-                }
-                curr = curr.next;
-            }
-            
-            return head.next;
+            ListNode list1 = queue.poll();
+            ListNode list2 = queue.poll();
+
+            ListNode mergeHead = new ListNode(-1);
+            merge(mergeHead, list1, list2);
+            queue.offer(mergeHead.next);
         }
+
+        return queue.poll();
+    }
+
+
+    private void merge(ListNode result, ListNode list1, ListNode list2)
+    {
+        ListNode curr1 = list1;
+        ListNode curr2 = list2;
+
+        while (curr1 != null && curr2 != null)
+        {
+            if (curr1.val < curr2.val)
+            {
+                result.next = curr1;
+                curr1 = curr1.next;
+            }
+            else 
+            {
+                result.next = curr2;
+                curr2 = curr2.next;
+            }
+            result = result.next;
+        }
+
+        result.next = (curr1 != null ? curr1 : curr2); 
+    }
 }
