@@ -9,27 +9,49 @@
  * }
  */
 class Solution {
-    public ListNode mergeKLists(ListNode[] lists) {
-        PriorityQueue<ListNode> minHeap = new PriorityQueue<>((a, b) -> Integer.compare(a.val, b.val));
-
-        for (ListNode node: lists)
+        public ListNode mergeKLists(ListNode[] lists)
         {
-            if ( node != null) minHeap.offer(node);
-        }
-
-        ListNode head = new ListNode();
-        ListNode curr = head;
-        while (minHeap.size() > 0)
-        {
-            ListNode nextNode = minHeap.poll();
-            if (nextNode.next != null)
+            int interval = 1;
+            while (interval < lists.length)
             {
-                minHeap.offer(nextNode.next);
+                for (int i=0; i < lists.length; i += 2 * interval)
+                {
+                    lists[i] = mergeLists(lists[i], 
+                        i + interval < lists.length ? lists[i + interval] : null);
+                }
+                
+                interval *= 2;
             }
-            curr.next = nextNode;
-            curr = nextNode;
+            
+            return lists.length == 0 ? null : lists[0];
         }
 
-        return head.next;
-    }
+        private ListNode mergeLists(ListNode left, ListNode right)
+        {
+            ListNode head = new ListNode();
+            ListNode curr = head;
+            while (left != null || right != null)
+            {
+                if (left == null) {
+                    curr.next = right;
+                    right = right.next;
+                } else if (right == null)
+                {
+                    curr.next = left;
+                    left = left.next;
+                } else {
+                    if (left.val <= right.val)
+                    {
+                        curr.next = left;
+                        left = left.next;
+                    } else {
+                        curr.next = right;
+                        right = right.next;
+                    }
+                }
+                curr = curr.next;
+            }
+            
+            return head.next;
+        }
 }
