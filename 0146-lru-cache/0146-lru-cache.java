@@ -26,15 +26,7 @@ class LRUCache {
         int value = values.getOrDefault(key, -1);
         if (value == -1) return -1;
 
-        // move used node to the head
-        ListNode used = nodes.get(key);
-        used.prev.next = used.next;
-        used.next.prev = used.prev;
-
-        used.next = dummyHead.next;
-        dummyHead.next.prev = used;
-        dummyHead.next = used;
-        used.prev = dummyHead;
+        moveToHead(nodes.get(key));
 
         return value;
     }
@@ -42,31 +34,51 @@ class LRUCache {
     public void put(int key, int value) {
         if (nodes.containsKey(key))
         {
+            moveToHead(nodes.get(key));
             values.put(key, value);
         }
         else
         {
             if (nodes.size() == capacity)
             {
-                // evict least recently used node from tail
-                ListNode evicted = dummyTail.prev;
-                evicted.prev.next = dummyTail;
-                dummyTail.prev = evicted.prev;
-
-                nodes.remove(evicted.val);
-                values.remove(evicted.val);
+                evict();
             }
 
             ListNode added = new ListNode(key);
-            added.next = dummyHead.next;
-            dummyHead.next.prev = added;
-
-            dummyHead.next = added;
-            added.prev = dummyHead;
+            addToHead(added);
 
             nodes.put(key, added);
             values.put(key, value);
         } 
+    }
+
+    private void evict() 
+    {
+        // evict least recently used node from tail
+        ListNode evicted = dummyTail.prev;
+        evicted.prev.next = dummyTail;
+        dummyTail.prev = evicted.prev;
+
+        nodes.remove(evicted.val);
+        values.remove(evicted.val);
+    }
+
+    private void moveToHead(ListNode node)
+    {
+        // unbind node and put it at head
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+        addToHead(node);
+    }
+
+    private void addToHead(ListNode node)
+    {
+        // put unbounded node at head
+        node.next = dummyHead.next;
+        dummyHead.next.prev = node;
+
+        dummyHead.next = node;
+        node.prev = dummyHead;
     }
 }
 
