@@ -15,23 +15,11 @@
  */
 class Solution {
     public boolean isSubtree(TreeNode root, TreeNode subRoot) {
-        
-        LinkedList<TreeNode> queue = new LinkedList<>();
-        queue.offer(root);
+        if (root == null) return false;
 
-        while (queue.size() > 0)
-        {
-            TreeNode node = queue.poll();
-            if (node.val == subRoot.val) 
-            {
-                if (same(node, subRoot)) return true;
-            }
-
-            if (node.left != null) queue.offer(node.left);
-            if (node.right != null) queue.offer(node.right);
-        }
-
-        return false;
+        return same(root, subRoot) 
+            || isSubtree(root.left, subRoot)
+            || isSubtree(root.right, subRoot);         
     }
 
     private boolean same(TreeNode root1, TreeNode root2)
