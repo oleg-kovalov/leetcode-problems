@@ -15,42 +15,43 @@
  */
 class Solution {
     public TreeNode deleteNode(TreeNode root, int key) {
-        if (root == null) return root;
+        if (root == null) return null;
 
-        if (root.val > key)
+        if (root.val > key) root.left = deleteNode(root.left, key);
+        else if (root.val < key) root.right = deleteNode(root.right, key);
+        else 
         {
-            root.left = deleteNode(root.left, key);
-        } else if (root.val < key)
-        {
-            root.right = deleteNode(root.right, key); 
-        } else {
-
-            if (root.left == null)
+            // if the node is leaf
+            if (root.left == null &&  root.right == null) root = null;
+            else if (root.right != null)
             {
-                return root.right; 
-            } else if (root.right == null)
+                // has right child
+                root.val = nextVal(root);
+                root.right = deleteNode(root.right, root.val);    
+            } else 
             {
-                return root.left;
-            } else {
-                // node to delete has 2 children
-                // we can replace it with smallest node in right subtree
-                // and run recursion again to delete smallest node
-                int minVal = findMinVal(root.right);
-                root.val = minVal;
-                
-                root.right = deleteNode(root.right, minVal);
+                // has only left child
+                root.val = prevVal(root);
+                root.left = deleteNode(root.left, root.val); 
             }
         }
 
         return root;
+        
     }
 
-    private int findMinVal(TreeNode curr)
+    private int prevVal(TreeNode node)
     {
-        while (curr.left != null)
-        {
-            curr = curr.left;
-        }
+        TreeNode curr = node.left;
+        while (curr.right != null) curr = curr.right;
+
+        return curr.val;
+    }
+
+    private int nextVal(TreeNode node)
+    {
+        TreeNode curr = node.right;
+        while (curr.left != null) curr = curr.left;
 
         return curr.val;
     }
