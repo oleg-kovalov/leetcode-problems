@@ -1,67 +1,56 @@
+class TrieNode
+{
+    HashMap<Character, TrieNode> children = new HashMap<>();
+    boolean isEnd;
+}
+
 class WordDictionary {
 
-    Trie trie;
-
+    TrieNode root;
     public WordDictionary() {
-        trie = new Trie();
+        root = new TrieNode();
     }
-
+    
     public void addWord(String word) {
-        trie.addWord(word);
+        TrieNode curr = root;
+        for (char c: word.toCharArray())
+        {
+            curr.children.putIfAbsent(c, new TrieNode());
+            curr = curr.children.get(c);
+        }
+        curr.isEnd = true;
     }
-
+    
     public boolean search(String word) {
-        return trie.search(word);
-    }
-
-    class Trie {
-        class Node {
-            Map<Character, Node> children = new HashMap<>();
-            boolean wordEnd;
-        }
-
-        Node root = new Node();
-
-        public void addWord(String word) {
-            Node current = root;
-            for (char c : word.toCharArray()) {
-                if (!current.children.containsKey(c)) {
-                    current.children.put(c, new Node());
+        List<TrieNode> nodes = new ArrayList<>();
+        nodes.add(root);
+        for (char c: word.toCharArray())
+        {
+            List<TrieNode> nextNodes = new ArrayList<>();
+                for (TrieNode node: nodes)
+                {
+                    if (c == '.') 
+                    {
+                        nextNodes.addAll(node.children.values());
+                    }
+                    else 
+                    {
+                        if (node.children.containsKey(c)) nextNodes.add(node.children.get(c));
+                    }
                 }
-                current = current.children.get(c);
-            }
-            current.wordEnd = true;
+                if (nextNodes.size() == 0) return false;
+                nodes = nextNodes;
         }
-
-        public boolean search(String word) {
-            return search(word, 0, root);
-        }
-
-        public boolean search(String word, int index, Node current) {
-            if (index > word.length())
-                return false;
-            if (index == word.length())
-                return current.wordEnd;
-
-            char c = word.charAt(index);
-            if (c - '.' == 0) {
-                boolean found = false;
-                for (Node child : current.children.values()) {
-                    found = search(word, index + 1, child);
-                    if (found)
-                        return true;
-                }
-                return false;
-            } else {
-                if (!current.children.containsKey(c))
-                    return false;
-
-                return search(word, index + 1, current.children.get(c));
-            }
-        }
-
+        
+        for (TrieNode node: nodes)
+            if (node.isEnd) return true;
+        
+        return false;
     }
 }
+
+
+
 
 /**
  * Your WordDictionary object will be instantiated and called as such:
