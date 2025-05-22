@@ -30,7 +30,7 @@ class Solution {
     private void backtrack(int row, int col, StringBuilder prefix, TrieNode node, boolean[][] visited, char[][] board)
     {
         TrieNode nextNode = node.children.get(board[row][col]);
-        if (nextNode == null) return null;
+        if (nextNode == null) return;
         
         visited[row][col] = true;
         prefix.append(board[row][col]);
