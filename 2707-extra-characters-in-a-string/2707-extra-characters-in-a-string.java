@@ -6,12 +6,12 @@ class Solution {
             trie.insert(word);
 
 
-        return backtrack(s, 0, s.length(), s.length(), trie);
+        return backtrack(s, 0, s.length(), trie.root);
 
 
     }
 
-    private int backtrack(String s, int start, int end, int charcount, Trie trie)
+    private int backtrack(String s, int start, int end, TrieNode root)
     {
         if (start >= end) return 0;
 
@@ -19,22 +19,29 @@ class Solution {
             return cache.get(s.substring(start, end));
 
         int result = Integer.MAX_VALUE;
+        TrieNode currNode = root;
         int matchingEnd = start + 1;
         while (matchingEnd <= end)
         {
-            if (trie.search(s.substring(start, matchingEnd)))
+            char currChar = s.charAt(matchingEnd-1);
+            if (!currNode.children.containsKey(currChar))
+                break;
+
+            currNode = currNode.children.get(currChar);
+            if (currNode.isEnd)
             {
                 // there is match, explore path where we take it
                 result = Math.min(result, 
-                        backtrack(s, matchingEnd, end, charcount - (matchingEnd - start), trie));
+                    backtrack(s, matchingEnd, end, root));
             }
 
             matchingEnd += 1;
+
         }
 
         // explore path where we don't take match from this start
         result = Math.min(result, 
-            1 + backtrack(s, start + 1, end, charcount - 1, trie));
+            1 + backtrack(s, start + 1, end, root));
 
 
         cache.put(s.substring(start, end), result);
@@ -64,16 +71,5 @@ class Trie
             curr = curr.children.get(c);
         }
         curr.isEnd = true;
-    }
-
-    public boolean search(String word)
-    {
-        TrieNode curr = root;
-        for (char c: word.toCharArray())
-        {
-            curr = curr.children.get(c);
-            if (curr == null) return false;
-        }
-        return curr.isEnd;
     }
 }
