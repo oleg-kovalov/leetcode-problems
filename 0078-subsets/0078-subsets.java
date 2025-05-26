@@ -1,32 +1,28 @@
 class Solution {
-
-    List<List<Integer>> result = new ArrayList<>();
-
     public List<List<Integer>> subsets(int[] nums) {
-        
-        backtrack(0, new ArrayList<>(), nums);
+        List<List<Integer>> result = new ArrayList<>();
+
+        backtrack(0, new ArrayList<>(), nums, result);
 
         return result;
     }
 
-    private void backtrack(int idx, List<Integer> curr, int[] nums) 
+    private void backtrack(int i, List<Integer> list, int[] nums, List<List<Integer>> result) 
     {
-        if (idx == nums.length)
+        if (i >= nums.length)
         {
-            result.add(new ArrayList<>(curr));
+            result.add(new ArrayList<>(list));
             return;
         }
 
-        //add
-        curr.add(nums[idx]);
-        backtrack(idx + 1, curr, nums);
-        curr.remove(curr.size()-1);
 
-        //don't add
-        backtrack(idx + 1, curr, nums);
-        
+        // include num
+        list.add(nums[i]);
+        backtrack(i + 1, list, nums, result);
+        list.remove(list.size()-1);
+
+        // don't include num
+        backtrack(i + 1, list, nums, result);
     }
-
-
 
 }
