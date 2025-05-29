@@ -1,38 +1,39 @@
 class Solution {
-    List<List<Integer>> result = new ArrayList<>();
-
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
-        combinationSumBacktracking(0, new ArrayList<>(), candidates, target);
+        List<List<Integer>> result = new ArrayList<>();
+        backtrack(candidates, 0, target, new ArrayList<>(), result);
 
         return result;
     }
 
-    private void combinationSumBacktracking(int start, List<Integer> combination, int[] candidates, int target)
+    private void backtrack(int[] candidates, int idx, int target, List<Integer> currRes, List<List<Integer>> result)
     {
-        // System.out.println(combination);
         if (target == 0)
         {
-            result.add(new ArrayList<>(combination));
+            result.add(new ArrayList<>(currRes));
             return;
         }
+        if (target < 0) return;
+        if (idx >= candidates.length) return;
+        
+        // choose num at index
+        currRes.add(candidates[idx]);
+        backtrack(candidates, idx, target - candidates[idx], currRes, result);
+        currRes.remove(currRes.size() - 1);
 
-        if (target < 0)
-        {
-            return;
-        }
-
-        for (int i=start; i<candidates.length; i++)
-        {
-            final int candidate = candidates[i];
-
-            combination.add(candidate);
-            target -= candidate;
-
-            combinationSumBacktracking(i, combination, candidates, target);
-
-            combination.remove(combination.size()-1);
-            target += candidate;
-        }
-
+        // don't choose num at index, move index forward
+        backtrack(candidates, idx + 1, target, currRes, result);
     }
+
+    //                          [], 7
+    //  [2],5              [3], 4,   [6], 1   [7],0   
+    //[2,2],3 [2,3],2
+
+    // [2,2,3], [2,3,2]  [3,2,2]  => [2,2,3]
+    //
+    //           [2,3,6,7]
+    //            ^
+    //   [2,3,6,7]       [2,3,6,7]
+    //    ^                 ^
+
 }
