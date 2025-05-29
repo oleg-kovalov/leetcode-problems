@@ -1,31 +1,31 @@
 class Solution {
-//[[]]
-//[[1]]
-//[[2,1], [1,2]]
-//[[3,2,1],[2,3,1],[2,1,3],  [3,1,2],[1,3,2],[1,2,3]]
-
-
     public List<List<Integer>> permute(int[] nums) {
-        List<List<Integer>> totalLists = new ArrayList<>();
-        totalLists.add(new ArrayList<>());
+        return backtrack(nums, 0);
+    }
 
-        for (int i=0; i<nums.length; i++)
+    private List<List<Integer>> backtrack(int[] nums, int idx)
+    {
+        if (idx == nums.length) 
         {
-            List<List<Integer>> currLists = new ArrayList<>();
-            int num = nums[i];
-            for (List<Integer> list: totalLists)
+            List<List<Integer>> emptyListList = new ArrayList<>();
+            emptyListList.add(new ArrayList<>());
+            return emptyListList;
+        }
+        
+        List<List<Integer>> permutations = backtrack(nums, idx + 1);
+        // insert current num in all possible spots in partial permutation
+        List<List<Integer>> nextPermutations = new ArrayList<>();
+        for (List<Integer> perm: permutations)
+        {
+            for (int i=0; i<perm.size() + 1; i++)
             {
-                for (int j=0; j<list.size() + 1; j++)
-                {
-                    List<Integer> newList = new ArrayList<>(list);
-                    newList.add(j, num);
-                    currLists.add(newList); 
-                }
+                List<Integer> nextPerm = new ArrayList<>(perm);
+                nextPerm.add(i, nums[idx]);
+                nextPermutations.add(nextPerm);
             }
-            totalLists = currLists; 
         }
 
-        return totalLists;
+        return nextPermutations;
     }
 
 }
