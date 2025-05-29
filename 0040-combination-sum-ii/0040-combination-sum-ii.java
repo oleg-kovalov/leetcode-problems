@@ -1,37 +1,50 @@
 class Solution {
-    List<List<Integer>> result;
-
     public List<List<Integer>> combinationSum2(int[] candidates, int target) {
-        result = new ArrayList<>();
-
+        List<List<Integer>> result = new ArrayList<>();
+        
         Arrays.sort(candidates);
-
-        backtracking(new ArrayList<>(), target, candidates, 0);
+        backtrack(candidates, 0, target, new ArrayList<>(), result);
 
         return result;
     }
 
-    private void backtracking(List<Integer> combination, int remainder, int[] candidates, int startFrom)
+    private void backtrack(int[] candidates, int idx, int target, List<Integer> currRes, List<List<Integer>> result)
     {
-        if (remainder < 0) return;
-        if (remainder == 0)
+        if (target == 0)
         {
-            result.add(new ArrayList<>(combination));
+            result.add(new ArrayList<>(currRes));
             return;
         }
 
-        for (int i = startFrom; i < candidates.length; i++)
+        if (target < 0) return;
+        if (idx >= candidates.length) return;
+        
+        int nextIdx = idx;
+        while (nextIdx < candidates.length && candidates[nextIdx] == candidates[idx]) 
+            nextIdx += 1;
+                
+        // skip any count of current num
+        backtrack(candidates, nextIdx, target, currRes, result);
+
+        // try all possible counts of current num
+        int num = candidates[idx];
+        int count = nextIdx - idx;
+        for (int i=0; i<count; i++)
         {
-            final Integer candidate = candidates[i];
-            if ((i > startFrom) && candidate.equals(candidates[i-1]))
-            {
-                continue;
-            }
-            combination.add(candidate);
-
-            backtracking(combination, remainder - candidate, candidates, i+1);
-
-            combination.remove(candidate);
+            currRes.add(num);
+            backtrack(candidates, nextIdx, target - num * (i + 1), currRes, result);
         }
+        for (int i=0; i<count; i++)
+        {
+            currRes.remove(currRes.size() - 1);
+        }
+
     }
+
 }
+
+
+//           [1,1,6,7,10]
+//                       []
+//  [1]                [1,1]       [6]
+//  [1,6]       [1,1,6]
