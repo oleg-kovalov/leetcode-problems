@@ -5,7 +5,7 @@ class Solution {
     Set<String> result = new HashSet<>();
 
     public List<String> readBinaryWatch(int turnedOn) {
-        if (turnedOn > 8) return new ArrayList<>();
+        // if (turnedOn > 8) return new ArrayList<>();
 
         for (int i=0; i<turnedOn + 1; i++)
         {
