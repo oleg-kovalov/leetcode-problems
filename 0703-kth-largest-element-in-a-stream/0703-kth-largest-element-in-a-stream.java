@@ -1,33 +1,28 @@
-    class KthLargest {
-
-        final int k;
-        PriorityQueue<Integer> priorityQueue;
-
-        public KthLargest(int k, int[] nums) {
-            this.k = k;
-            priorityQueue = new PriorityQueue<>(Comparator.naturalOrder()); // ASC, from smaller to larger
-            for (int num : nums) {
-                priorityQueue.add(num);
-            }
-
-            // we keep only k largest elements, sorted ASC
-            while (priorityQueue.size() > k)
-            {
-                priorityQueue.poll();
-            }
-
-        }
-
-        public int add(int val) {
-            priorityQueue.add(val);
-            if (priorityQueue.size() > k)
-            {
-                priorityQueue.poll();
-            }
-
-            return priorityQueue.peek();
+class KthLargest {
+    int k;
+    PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+    public KthLargest(int k, int[] nums) {
+        this.k = k;
+        for (int num: nums)
+        {
+            add(num);
         }
     }
+    
+    public int add(int val) {
+        if (minHeap.size() < k)
+        {
+            minHeap.offer(val);
+        } else {
+            if (minHeap.peek() < val)
+            {
+                minHeap.poll();
+                minHeap.offer(val);
+            }
+        }
+        return minHeap.peek();
+    }
+}
 
 /**
  * Your KthLargest object will be instantiated and called as such:
