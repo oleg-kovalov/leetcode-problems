@@ -1,60 +1,54 @@
 class Solution {
-    public int orangesRotting(int[][] grid) {
+
+    public int orangesRotting(int[][] grid)
+    {
+        int rows = grid.length;
+        int cols = grid[0].length;
+        int[][] dirs = new int[][] {{1,0}, {-1,0}, {0,1},{0,-1}};
+        
+        int freshOranges = 0;
         LinkedList<int[]> queue = new LinkedList<>();
-        int freshCounter = 0;
-
-        for (int row = 0; row < grid.length; row++)
+        
+        for (int row=0; row<rows; row++)
         {
-            for (int col = 0; col < grid[row].length; col++)
+            for (int col=0; col<cols; col++)
             {
-                if (grid[row][col] == 2)
+                int value = grid[row][col];
+                if (value == 1) freshOranges += 1;
+                if (value == 2) queue.offer(new int[] {row, col});
+            }
+        }
+        
+        int time=0;
+        int size = queue.size();
+        while(queue.size() > 0)
+        {
+            int[] cell = queue.pop();
+            
+            for (int[] dir: dirs)
+            {
+                int newRow = cell[0] + dir[0];
+                int newCol = cell[1] + dir[1];
+                
+                if (0 <= newRow && newRow < rows
+                && 0 <= newCol && newCol < cols
+                && grid[newRow][newCol] == 1)
                 {
-                    queue.offer(new int[] {row, col});
-                } else if (grid[row][col] == 1)
-                {
-                    freshCounter += 1;
+                    queue.offer(new int[] {newRow, newCol});
+                    freshOranges -= 1;
+                    grid[newRow][newCol] = 2;
                 }
+            }
+
+            size -= 1;
+            if (size == 0 && queue.size() > 0) {
+                time +=1;
+                size = queue.size();
             }
         }
 
-        if (queue.size() == 0 ) return freshCounter > 0 ? -1 : 0;
-
-        int depth = 0;
-        int depthCount = queue.size();
-        while (queue.peek() != null)
-        {
-            final int[] orange = queue.poll();
-            int row = orange[0];
-            int col = orange[1];
-
-            int[][] nCoord = new int[][]{
-                {row-1, col},
-                {row+1, col},
-                {row, col-1},
-                {row, col+1}};
-
-            for (int coord=0; coord < nCoord.length; coord++)
-            {
-                int nRow = nCoord[coord][0];
-                int nCol = nCoord[coord][1];
-                if (0 <= nRow && nRow <= grid.length-1
-                    && 0 <= nCol && nCol <= grid[row].length-1
-                    && grid[nRow][nCol] == 1)
-                {
-                    queue.add(new int[]{nRow, nCol});
-                    grid[nRow][nCol] = 2;
-                    freshCounter -= 1;
-                }
-            }
-            depthCount -= 1;
-            if (depthCount == 0 && queue.size() > 0)
-            {
-                depth += 1;
-                depthCount = queue.size();
-            }
-        }
-
-        return freshCounter == 0 ? depth : -1;
+        if (freshOranges > 0) return -1;
+        return time;
 
     }
 }
