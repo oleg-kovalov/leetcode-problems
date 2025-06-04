@@ -1,17 +1,18 @@
 class Solution {
     public int findKthLargest(int[] nums, int k) {
-        // priority queue based on min heap
-        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(Comparator.naturalOrder());
 
-        for (int num : nums) {
-            priorityQueue.add(num);
-            // keep only k largest elements
-            if (priorityQueue.size() > k)
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+
+        for (int num: nums)
+        {
+            minHeap.offer(num);
+            if (minHeap.size() > k) 
             {
-                priorityQueue.poll();
+                minHeap.poll();
             }
-        }
-
-        return priorityQueue.poll();
+        }    
+            
+        return minHeap.peek();
     }
 }
+
