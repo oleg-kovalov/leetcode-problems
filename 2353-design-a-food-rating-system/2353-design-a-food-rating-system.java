@@ -1,43 +1,53 @@
 class FoodRatings {
 
-        record FR (String food, int rating) {}
+    private record FR (String food, int rating) {} ;
 
-        private HashMap<String, TreeSet<FR>> cuisinesMap = new HashMap<>();
-        private HashMap<String, String> foodToCuisine = new HashMap<>();
-        private HashMap<String, FR> foodToFrMap = new HashMap<>();
+    HashMap<String, Integer> foodRating = new HashMap<>();
+    HashMap<String, String> foodCuisine = new HashMap<>();
+    HashMap<String, PriorityQueue<FR>> cuisineRated = new HashMap<>();
 
-        public FoodRatings(String[] foods, String[] cuisines, int[] ratings) {
-            for (int i=0; i< foods.length; i++)
-            {
-                FR fr = new FR(foods[i], ratings[i]);
-                foodToFrMap.put(fr.food(), fr);
+    public FoodRatings(String[] foods, String[] cuisines, int[] ratings) {
+        for (int i=0; i<foods.length; i++)
+        {
+            String food = foods[i];
+            String cuisine = cuisines[i];
+            int rating = ratings[i];
 
-                TreeSet<FR> cuisineSet = cuisinesMap.getOrDefault(cuisines[i],
-                    new TreeSet<>(Comparator.comparing(FR::rating).reversed().thenComparing(FR::food)));
-                cuisineSet.add(fr);
-                cuisinesMap.put(cuisines[i], cuisineSet);
+            foodCuisine.put(food, cuisine);
+            foodRating.put(food, rating);
+            
+            cuisineRated.putIfAbsent(cuisine, new PriorityQueue<>((a,b) -> {
+                return (a.rating != b.rating)  
+                    ? Integer.compare(b.rating, a.rating)
+                    : a.food.compareTo(b.food);
+            }));
 
-                foodToCuisine.put(foods[i], cuisines[i]);
+            cuisineRated.get(cuisine).add(new FR(food, rating));
+        }
+    }
+    
+    public void changeRating(String food, int newRating) {
+        foodRating.put(food, newRating);
+        String cuisine = foodCuisine.get(food);
+        cuisineRated.get(cuisine).offer(new FR(food, newRating));
+
+    }
+    
+    public String highestRated(String cuisine) {
+        PriorityQueue<FR> maxHeap = cuisineRated.get(cuisine);
+        while (maxHeap.size() > 0)
+        {
+            FR fr = maxHeap.peek();
+            // check if rating is not stale
+            if (fr.rating != foodRating.get(fr.food)) {
+                maxHeap.poll();
+            } else {
+                return fr.food;
             }
-
         }
 
-        public void changeRating(String food, int newRating) {
-            final FR fr = foodToFrMap.get(food);
-
-            TreeSet<FR> frs = cuisinesMap.get(foodToCuisine.get(food));
-            frs.remove(fr);
-
-            FR newFR = new FR(food, newRating);
-            frs.add(newFR);
-            foodToFrMap.put(food, newFR);
-        }
-
-        public String highestRated(String cuisine) {
-            return cuisinesMap.get(cuisine).first().food();
-        }
-    
-    
+        return "";
+    }
 }
 
 /**
@@ -46,3 +56,9 @@ class FoodRatings {
  * obj.changeRating(food,newRating);
  * String param_2 = obj.highestRated(cuisine);
  */
+
+
+
+ //   cuisine -> [food,rating]
+ //   food - cuisine
+ //   food - rating
