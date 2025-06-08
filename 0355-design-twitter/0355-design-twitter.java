@@ -24,12 +24,15 @@ class Twitter {
     public List<Integer> getNewsFeed(int userId) {
         registerUserIfNeeded(userId);
 
-        Set<Integer> merged = new TreeSet<>((a,b) -> Integer.compare(tweetTimestamps.get(b),tweetTimestamps.get(a)));
+        // Set<Integer> merged = new TreeSet<>((a,b) -> Integer.compare(tweetTimestamps.get(b),tweetTimestamps.get(a)));
+        List<Integer> merged = new ArrayList<>();
         for (int followee: followers.get(userId))
         {
             PriorityQueue<Integer> feed = tweets.get(followee);
             merged.addAll(Arrays.asList(feed.toArray(new Integer[feed.size()])));    
         }
+
+        Collections.sort(merged, (a,b) -> Integer.compare(tweetTimestamps.get(b),tweetTimestamps.get(a)));
 
         List<Integer> result = new ArrayList<>();
         Iterator<Integer> iterator = merged.iterator();
