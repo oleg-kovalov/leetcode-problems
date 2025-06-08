@@ -27,7 +27,7 @@ class CombinationIterator {
         }
 
         if (idx == characters.length()) return;
-        // if (length > combination.size() + )
+        if (length > combination.size() + characters.length() - idx) return;
 
         //take current character
         combination.add(characters.charAt(idx));
