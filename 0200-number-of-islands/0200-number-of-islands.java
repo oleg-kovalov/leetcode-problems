@@ -1,41 +1,46 @@
 class Solution {
-    private record Coordinate (int row, int col) {}
-    LinkedList<Coordinate> queue = new LinkedList<>();
-
     public int numIslands(char[][] grid) {
-        int result = 0;
+        int rows = grid.length;
+        int cols = grid[0].length;
+        int[][] dirs = new int[][] {{1,0},{-1,0},{0,1},{0,-1}}; 
+                
+        boolean[][] visited = new boolean[rows][cols];
 
-        for (int i=0; i< grid.length; i++)
+        int count = 0;
+
+        for (int row=0; row<rows; row++)
         {
-            for (int j=0; j<grid[i].length; j++)
+            for (int col=0; col<cols; col++)
             {
-                if (grid[i][j] - '0' == 1)
+                if (grid[row][col] != '1') continue;
+                if (visited[row][col]) continue;
+
+                LinkedList<int[]> queue = new LinkedList<>();
+                queue.offer(new int[] {row, col});
+                visited[row][col] = true;
+                count += 1;
+                
+                while (queue.size() > 0)
                 {
-                    queue.offer(new Coordinate(i, j));
-                    while (queue.peek() != null)
+                    int[] cell = queue.poll();
+
+                    for (int[] dir: dirs)
                     {
-                        final Coordinate coord = queue.poll();
-                        int rowC = coord.row;
-                        int colC = coord.col;
-                        if ((rowC < 0) || (rowC == grid.length) || (colC < 0) || (colC == grid[0].length))
+                        int newRow = cell[0] + dir[0];
+                        int newCol = cell[1] + dir[1];
+                        if (0 <= newRow && newRow < rows
+                            && 0 <= newCol && newCol < cols
+                            && grid[newRow][newCol] == '1'
+                            && !visited[newRow][newCol])
                         {
-                            continue;
-                        }
-                        if (grid[rowC][colC] - '0' == 1)
-                        {
-                            grid[rowC][colC] = 2;
-                            queue.offer(new Coordinate(rowC - 1, colC));
-                            queue.offer(new Coordinate(rowC + 1, colC));
-                            queue.offer(new Coordinate(rowC, colC - 1));
-                            queue.offer(new Coordinate(rowC, colC + 1));
+                            queue.offer(new int[] {newRow, newCol});
+                            visited[newRow][newCol] = true;
                         }
                     }
-
-                    result += 1;
                 }
             }
         }
 
-        return result;
+        return count;
     }
 }
