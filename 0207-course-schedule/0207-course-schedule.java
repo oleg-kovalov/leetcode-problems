@@ -1,46 +1,38 @@
 class Solution {
-        List<List<Integer>> adjacencyList = new ArrayList<>();
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
 
-        public boolean canFinish(int numCourses, int[][] prerequisites) {
-
-            for (int i = 0; i < numCourses; i++) {
-                adjacencyList.add(new ArrayList<>());
-            }
-            for (int[] prerequisite : prerequisites) {
-                adjacencyList.get(prerequisite[0]).add(prerequisite[1]);
-            }
-                
-            boolean[] visited = new boolean[numCourses];
-            boolean[] recStack = new boolean[numCourses];
-            for (int i = 0; i < numCourses; i++) {
-
-                boolean cycle = findCycleDFS(i, visited, recStack);
-                if (cycle) return false;
-            }
-
-            return true;
-
+        HashMap<Integer, List<Integer>> adjMap = new HashMap<>();
+        for (int[] prereq: prerequisites)
+        {
+            adjMap.putIfAbsent(prereq[0], new ArrayList<>());
+            adjMap.get(prereq[0]).add(prereq[1]);
         }
 
-        private boolean findCycleDFS(int node, boolean[] visited, boolean[] recStack) {
-            if (recStack[node]) {
-                return true;
-            }
+        HashSet<Integer> visited = new HashSet<>();
+        HashSet<Integer> path = new HashSet<>();
+        for (int i=0; i<numCourses; i++)
+        {
+            if (!dfs(i, adjMap, visited, path)) return false;
+        }        
 
-            if (visited[node]) {
-                return false;
-            }
+        return true;
+    }
 
-            visited[node] = true;
-            recStack[node] = true;
+    private boolean dfs(int course, Map<Integer, List<Integer>> adjMap, Set<Integer> visited, Set<Integer> path)
+    {
+        if (path.contains(course)) return false; // cycle detected
+        if (visited.contains(course)) return true;
 
-            for (Integer child : adjacencyList.get(node)) {
-                boolean cycle = findCycleDFS(child, visited, recStack);
-                if (cycle) return true;
-            }
+        visited.add(course);
+        path.add(course);
 
-            recStack[node] = false;
-            return false;
+        for (int prereq : adjMap.getOrDefault(course, Collections.emptyList()))
+        {
+           if  (!dfs(prereq, adjMap, visited, path)) return false;
         }
-    
+
+        path.remove(course);
+
+        return true;
+    }
 }
