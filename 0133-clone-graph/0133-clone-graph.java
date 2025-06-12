@@ -18,40 +18,71 @@ class Node {
 }
 */
 
+
 class Solution {
+
     public Node cloneGraph(Node node) {
-        if (node == null) {
-            return node;
-        }
+        if (node == null) return null;
+        
+        HashMap<Node,Node> cloned = new HashMap<>();
+        Queue<Node> queue = new LinkedList<>();
+        queue.offer(node);
 
-        // Hash map to save the visited node and it's respective clone
-        // as key and value respectively. This helps to avoid cycles.
-        HashMap<Node, Node> visited = new HashMap();
+        while (queue.size() > 0)
+        {
 
-        // Put the first node in the queue
-        LinkedList<Node> queue = new LinkedList<Node> ();
-        queue.add(node);
-        // Clone the node and put it in the visited dictionary.
-        visited.put(node, new Node(node.val, new ArrayList()));
+            Node oldNode = queue.poll();
+            if (cloned.containsKey(oldNode)) continue;
 
-        // Start BFS traversal
-        while (!queue.isEmpty()) {
-            // Pop a node say "n" from the from the front of the queue.
-            Node n = queue.remove();
-            // Iterate through all the neighbors of the node "n"
-            for (Node neighbor: n.neighbors) {
-                if (!visited.containsKey(neighbor)) {
-                    // Clone the neighbor and put in the visited, if not present already
-                    visited.put(neighbor, new Node(neighbor.val, new ArrayList()));
-                    // Add the newly encountered node to the queue.
-                    queue.add(neighbor);
+
+            Node newNode = new Node(oldNode.val);
+            cloned.put(oldNode, newNode);
+
+            for (Node neighbor: oldNode.neighbors)
+            {
+                if (cloned.containsKey(neighbor))
+                {
+                    Node newNeighbor = cloned.get(neighbor);
+                    newNode.neighbors.add(newNeighbor);
+                    newNeighbor.neighbors.add(newNode);
+                } else {
+                    queue.offer(neighbor);
                 }
-                // Add the clone of the neighbor to the neighbors of the clone node "n".
-                visited.get(n).neighbors.add(visited.get(neighbor));
             }
         }
+        
+        return cloned.get(node);
 
-        // Return the clone of the node from visited.
-        return visited.get(node);
     }
 }
+
+
+
+
+
+
+
+
+
+// DFS
+//
+// class Solution {
+//     HashMap<Node, Node> created = new HashMap<>();
+
+//     public Node cloneGraph(Node node) {
+//         if (node == null) return null;
+//         Node newNode = new Node(node.val);
+//         created.put(node, newNode);
+//         for (Node neighbor: node.neighbors)
+//         {
+//             if (created.containsKey(neighbor))
+//             {
+//                 newNode.neighbors.add(created.get(neighbor));
+//             } else {
+//                 newNode.neighbors.add(cloneGraph(neighbor));
+//             }
+//         }
+
+//         return newNode;
+//     }
+// }
