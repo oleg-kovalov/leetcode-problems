@@ -2,37 +2,44 @@ class Solution {
     public boolean canFinish(int numCourses, int[][] prerequisites) {
 
         HashMap<Integer, List<Integer>> adjMap = new HashMap<>();
-        for (int[] prereq: prerequisites)
+        HashMap<Integer, Integer> inCount = new HashMap<>();
+        for (int[] p: prerequisites)
         {
-            adjMap.putIfAbsent(prereq[0], new ArrayList<>());
-            adjMap.get(prereq[0]).add(prereq[1]);
+            adjMap.putIfAbsent(p[1], new ArrayList<>());
+            adjMap.get(p[1]).add(p[0]);
+
+            inCount.put(p[0], inCount.getOrDefault(p[0], 0) + 1);
         }
 
-        HashSet<Integer> visited = new HashSet<>();
-        HashSet<Integer> path = new HashSet<>();
-        for (int i=0; i<numCourses; i++)
+        LinkedList<Integer> queue = new LinkedList<>();   //  
+        for (int course=0; course < numCourses; course++)
         {
-            if (!dfs(i, adjMap, visited, path)) return false;
-        }        
-
-        return true;
-    }
-
-    private boolean dfs(int course, Map<Integer, List<Integer>> adjMap, Set<Integer> visited, Set<Integer> path)
-    {
-        if (path.contains(course)) return false; // cycle detected
-        if (visited.contains(course)) return true;
-
-        visited.add(course);
-        path.add(course);
-
-        for (int prereq : adjMap.getOrDefault(course, Collections.emptyList()))
-        {
-           if  (!dfs(prereq, adjMap, visited, path)) return false;
+            if (!inCount.containsKey(course))
+            {
+                // root course, no prerequisites
+                queue.offer(course);
+            }
         }
 
-        path.remove(course);
+        HashSet<Integer> passed = new HashSet<>();// 0,1,3,2
+        while (queue.size() > 0)
+        {
+            int course = queue.poll();  //
+            if (passed.contains(course)) return false;
+            passed.add(course);
 
-        return true;
-    }
+            for (int nextCourse : adjMap.getOrDefault(course, Collections.emptyList()))
+            {
+                inCount.put(nextCourse, inCount.get(nextCourse) - 1);
+                if (inCount.get(nextCourse) == 0)
+                {
+                    // all prerequisites are passed
+                    queue.offer(nextCourse);
+                    inCount.remove(nextCourse);
+                }
+            }
+        }
+
+        return inCount.size() == 0;
+    }   
 }
