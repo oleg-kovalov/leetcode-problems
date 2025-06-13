@@ -21,12 +21,11 @@ class Solution {
             }
         }
 
-        HashSet<Integer> passed = new HashSet<>();
+        int passedCount = 0;
         while (queue.size() > 0)
         {
             int course = queue.poll();  
-            if (passed.contains(course)) return false; // cycle detected
-            passed.add(course);
+            passedCount += 1;
 
             for (int nextCourse : adjMap.getOrDefault(course, Collections.emptyList()))
             {
@@ -40,6 +39,6 @@ class Solution {
             }
         }
 
-        return passed.size() == numCourses;
+        return passedCount == numCourses; // if not all courses were passed, there is cycle in the graph
     }   
 }
