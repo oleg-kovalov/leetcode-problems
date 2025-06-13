@@ -11,7 +11,7 @@ class Solution {
             inCount.put(p[0], inCount.getOrDefault(p[0], 0) + 1);
         }
 
-        LinkedList<Integer> queue = new LinkedList<>();   //  
+        LinkedList<Integer> queue = new LinkedList<>();   
         for (int course=0; course < numCourses; course++)
         {
             if (!inCount.containsKey(course))
@@ -21,11 +21,11 @@ class Solution {
             }
         }
 
-        HashSet<Integer> passed = new HashSet<>();// 0,1,3,2
+        HashSet<Integer> passed = new HashSet<>();
         while (queue.size() > 0)
         {
-            int course = queue.poll();  //
-            if (passed.contains(course)) return false;
+            int course = queue.poll();  
+            if (passed.contains(course)) return false; // cycle detected
             passed.add(course);
 
             for (int nextCourse : adjMap.getOrDefault(course, Collections.emptyList()))
@@ -40,6 +40,6 @@ class Solution {
             }
         }
 
-        return inCount.size() == 0;
+        return passed.size() == numCourses;
     }   
 }
