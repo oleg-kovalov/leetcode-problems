@@ -13,8 +13,8 @@ class Solution {
 
             prices.put(new Flight(from, to), price);
         }
-        System.out.println(adjMap);
-        System.out.println(prices);
+        // System.out.println(adjMap);
+        // System.out.println(prices);
 
 
         // [city, price, stops]
