@@ -1,60 +1,33 @@
 class Solution {
-    record Flight(int from, int to) {};
     public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+        
 
-        HashMap<Integer, List<Integer>> adjMap = new HashMap<>(); 
-        HashMap<Flight, Integer> prices = new HashMap<>();
-        for (int[] f: flights)
+        int[] prices = new int[n];
+        for (int i=0; i<prices.length; i++)
         {
-            int from = f[0]; int to = f[1]; int price = f[2];
-
-            adjMap.putIfAbsent(from, new ArrayList<>());
-            adjMap.get(from).add(to);
-
-            prices.put(new Flight(from, to), price);
+            prices[i] = Integer.MAX_VALUE;
         }
-        // System.out.println(adjMap);
-        // System.out.println(prices);
+        prices[src] = 0;
 
-
-        // [city, price, stops]
-        PriorityQueue<int[]> minHeap = new PriorityQueue<>((a,b) -> Integer.compare(a[1], b[1]));
-        for (int dest: adjMap.getOrDefault(src, Collections.emptyList()))
+        for (int i=0; i<k+1; i++)
         {
-            int price = prices.get(new Flight(src, dest));
-            minHeap.offer(new int[] {dest, price, k});
-        }
-
-        int[][] memo = new int[n][k+1];
-        for (int i=0; i<memo.length; i++)
-        {
-            for (int j=0; j<memo[0].length; j++)
+            // System.out.println(Arrays.toString(prices));
+            int[] nextPrices = Arrays.copyOf(prices, prices.length);
+            for (int[] f: flights)
             {
-                memo[i][j] = Integer.MAX_VALUE;
+                int from = f[0], to = f[1], price = f[2];
+
+                if (prices[from] == Integer.MAX_VALUE) continue; // wa haven't reached source city yet
+                if (prices[from] + price < nextPrices[to])
+                {
+                    nextPrices[to] = prices[from] + price;
+                }
             }
-        }   
-
-        while (minHeap.size() > 0)
-        {
-            int[] entry = minHeap.poll();
-            int city = entry[0]; int price = entry[1]; int remK = entry[2];
-            // System.out.printf("we are in city=%s, price=%s, remK=%s \n", city, price, remK);
-
-            if (memo[city][remK] <= price) continue; // we were here with better price
-            memo[city][remK] = price;
-
-            if (city == dst) return price;
-            if (remK <= 0) continue;
-
-            for (int dest: adjMap.getOrDefault(city, Collections.emptyList()))
-            {
-                int nextPrice = prices.get(new Flight(city, dest));
-                minHeap.offer(new int[] {dest, price + nextPrice, remK - 1});
-            }
+            prices = nextPrices;
         }
 
-        return -1;
-
+        // System.out.println(Arrays.toString(prices));
+        return prices[dst] != Integer.MAX_VALUE ? prices[dst] : -1;
 
     }
 }
