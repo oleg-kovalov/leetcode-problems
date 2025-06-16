@@ -32,12 +32,12 @@ class Solution {
 
         public int find(int node)
         {
-            if (parents.get(node) == node) return node;
+            if (parents.get(node) != node) 
+            {
+                parents.put(node, find(parents.get(node)));
+            }
 
-            int root = find(parents.get(node));
-            parents.put(node, root);
-
-            return root;
+            return parents.get(node);
         }
 
         public boolean join (int nodeA, int nodeB)
