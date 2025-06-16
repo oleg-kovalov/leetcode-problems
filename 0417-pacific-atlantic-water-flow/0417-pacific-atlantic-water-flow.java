@@ -1,13 +1,15 @@
 class Solution {
+    int[][] dirs = new int[][] {{1,0}, {-1,0}, {0,1}, {0,-1}};
+    int rows;
+    int cols;
+
     public List<List<Integer>> pacificAtlantic(int[][] heights) {
-        int rows = heights.length;
-        int cols = heights[0].length;
-        int[][] dirs = new int[][] {{1,0}, {-1,0}, {0,1}, {0,-1}};
+        rows = heights.length;
+        cols = heights[0].length;
 
-
-        boolean[][] reachPacific = new boolean[rows][cols];
-        
         LinkedList<int[]> queue = new LinkedList<>(); // [row,col,height]
+        
+        boolean[][] reachPacific = new boolean[rows][cols];
         for (int row=0; row<rows; row++)
         {
             queue.offer(new int[] {row, 0, heights[row][0]});
@@ -19,25 +21,7 @@ class Solution {
             reachPacific[0][col] = true;
         }
 
-        while (queue.size() > 0)
-        {
-            int[] cell = queue.poll();
-
-            for (int[] dir: dirs)
-            {
-                int newRow = cell[0] + dir[0];
-                int newCol = cell[1] + dir[1];
-                
-                if (0<= newRow && newRow < rows
-                    && 0<= newCol && newCol < cols
-                    && !reachPacific[newRow][newCol]
-                    && heights[newRow][newCol] >= cell[2])
-                {
-                    reachPacific[newRow][newCol] = true;
-                    queue.offer(new int[] {newRow, newCol, heights[newRow][newCol]});
-                }
-            }
-        }
+        bfs(queue, reachPacific, heights);
 
         boolean[][] reachAtlantic = new boolean[rows][cols];
         for (int row=0; row<rows; row++)
@@ -51,25 +35,7 @@ class Solution {
             reachAtlantic[rows-1][col] = true;
         }
 
-        while (queue.size() > 0)
-        {
-            int[] cell = queue.poll();
-
-            for (int[] dir: dirs)
-            {
-                int newRow = cell[0] + dir[0];
-                int newCol = cell[1] + dir[1];
-
-                if (0<= newRow && newRow < rows
-                    && 0<= newCol && newCol < cols
-                    && !reachAtlantic[newRow][newCol]
-                    && heights[newRow][newCol] >= cell[2])
-                {
-                    reachAtlantic[newRow][newCol] = true;
-                    queue.offer(new int[] {newRow, newCol, heights[newRow][newCol]});
-                }
-            }
-        }
+        bfs(queue, reachAtlantic, heights);
 
         List<List<Integer>> result = new ArrayList<>();
         for (int row=0; row<rows; row++)
@@ -89,6 +55,29 @@ class Solution {
 
         return result;
 
+    }
+
+    private void bfs(LinkedList<int[]> queue, boolean[][] reachGrid, int[][] heights)
+    {
+        while (queue.size() > 0)
+        {
+            int[] cell = queue.poll();
+
+            for (int[] dir: dirs)
+            {
+                int newRow = cell[0] + dir[0];
+                int newCol = cell[1] + dir[1];
+
+                if (0<= newRow && newRow < rows
+                    && 0<= newCol && newCol < cols
+                    && !reachGrid[newRow][newCol]
+                    && heights[newRow][newCol] >= cell[2])
+                {
+                    reachGrid[newRow][newCol] = true;
+                    queue.offer(new int[] {newRow, newCol, heights[newRow][newCol]});
+                }
+            }
+        }
     }
 
 }
