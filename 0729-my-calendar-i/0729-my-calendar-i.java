@@ -3,7 +3,7 @@ class MyCalendar {
     STN root;
 
     public MyCalendar() {
-        root = new STN(0, 1000_000_000, false);
+        root = new STN(0, 1000_000_000);
     }
     
     public boolean book(int startTime, int endTime) {
@@ -11,18 +11,18 @@ class MyCalendar {
         {
             return false;
         } else {
-            insert(startTime, endTime - 1, root, true);
+            insert(startTime, endTime - 1, root);
             return true;
         }
     }
 
     private boolean conflict(int left, int right, STN node)
     {
-        if (node.leftChild == null) return node.val;
+        if (node.leftChild == null && node.rightChild == null) return node.val;
 
         if (node.left == left && node.right == right)
         {
-            return true;
+            return node.val;
         }
 
         int mid = node.left + (node.right - node.left) / 2;
@@ -39,35 +39,34 @@ class MyCalendar {
 
     }
 
-    private void insert(int left, int right, STN node, boolean val)
+    private void insert(int left, int right, STN node)
     {
         if (node.left == left && node.right == right)
         {
-            node.val = val;
-            node.leftChild = node.rightChild = null;
+            node.val = true;
             return;
         }
 
         int mid = node.left + (node.right - node.left) / 2;
 
-        if (node.leftChild == null)
+        if (node.leftChild == null && node.rightChild == null) 
         {
-            node.leftChild = new STN(node.left, mid, node.val);
-            node.rightChild = new STN(mid+1, node.right, node.val);
+            node.leftChild = new STN(node.left, mid);
+            node.rightChild = new STN(mid+1, node.right);
         }
 
         if (right <= mid)
         {
-            insert(left, right, node.leftChild, val);
+            insert(left, right, node.leftChild);
         } else if (left >= mid+1)
         {
-            insert(left, right, node.rightChild, val);
+            insert(left, right, node.rightChild);
         } else {
-            insert(left, mid, node.leftChild, val);
-            insert(mid+1, right, node.rightChild, val);
+            insert(left, mid, node.leftChild);
+            insert(mid+1, right, node.rightChild);
         }
 
-        node.val = node.leftChild.val && node.rightChild.val;
+        node.val = node.leftChild.val || node.rightChild.val;
 
     }
 
@@ -79,11 +78,10 @@ class MyCalendar {
         int right;
         boolean val;
 
-        STN(int left, int right, boolean val)
+        STN(int left, int right)
         {
             this.left = left;
             this.right = right;
-            this.val = val;
         }
     }
 }
