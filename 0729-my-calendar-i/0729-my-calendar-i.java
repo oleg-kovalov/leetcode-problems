@@ -20,14 +20,12 @@ class MyCalendar {
     {
         if (node == null) return false;
 
+        // if this is leaf node, then we have inserted interval earlier
+        // now we have conflict with current interval that is same or smaller than existing 
         // this shortcat allows to pass TLE 
         if (node.leftChild == null && node.rightChild == null) 
             return node.val;
 
-        if (node.left == left && node.right == right)
-        {
-            return node.val;
-        }
 
         int mid = node.left + (node.right - node.left) / 2;
         if (right <= mid)
@@ -45,6 +43,9 @@ class MyCalendar {
 
     private void insert(int left, int right, STN node)
     {
+        // we don't break interval to smallest possible cases but try to fix as is
+        // if it fits current tree structure, only breaking if necessary
+        // this shortcat allows to pass TLE 
         if (node.left == left && node.right == right)
         {
             node.val = true;
@@ -52,12 +53,6 @@ class MyCalendar {
         }
 
         int mid = node.left + (node.right - node.left) / 2;
-
-        // if (node.leftChild == null && node.rightChild == null) 
-        // {
-        //     node.leftChild = new STN(node.left, mid);
-        //     node.rightChild = new STN(mid+1, node.right);
-        // }
 
         if (right <= mid)
         {
