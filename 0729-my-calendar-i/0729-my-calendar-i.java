@@ -18,7 +18,11 @@ class MyCalendar {
 
     private boolean conflict(int left, int right, STN node)
     {
-        if (node.leftChild == null && node.rightChild == null) return node.val;
+        if (node == null) return false;
+
+        // this shortcat allows to pass TLE 
+        if (node.leftChild == null && node.rightChild == null) 
+            return node.val;
 
         if (node.left == left && node.right == right)
         {
@@ -49,24 +53,29 @@ class MyCalendar {
 
         int mid = node.left + (node.right - node.left) / 2;
 
-        if (node.leftChild == null && node.rightChild == null) 
-        {
-            node.leftChild = new STN(node.left, mid);
-            node.rightChild = new STN(mid+1, node.right);
-        }
+        // if (node.leftChild == null && node.rightChild == null) 
+        // {
+        //     node.leftChild = new STN(node.left, mid);
+        //     node.rightChild = new STN(mid+1, node.right);
+        // }
 
         if (right <= mid)
         {
+            if (node.leftChild == null) node.leftChild = new STN(node.left, mid);
             insert(left, right, node.leftChild);
         } else if (left >= mid+1)
         {
+            if (node.rightChild == null) node.rightChild = new STN(mid+1, node.right);
             insert(left, right, node.rightChild);
         } else {
+            if (node.leftChild == null) node.leftChild = new STN(node.left, mid);
             insert(left, mid, node.leftChild);
+            if (node.rightChild == null) node.rightChild = new STN(mid+1, node.right);
             insert(mid+1, right, node.rightChild);
         }
 
-        node.val = node.leftChild.val || node.rightChild.val;
+        node.val = (node.leftChild == null ? false : node.leftChild.val) 
+            || (node.rightChild == null ? false: node.rightChild.val);
 
     }
 
