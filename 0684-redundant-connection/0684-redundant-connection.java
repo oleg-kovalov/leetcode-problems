@@ -1,59 +1,67 @@
 class Solution {
-    LinkedHashSet<Integer> path;
     public int[] findRedundantConnection(int[][] edges) {
-        path = new LinkedHashSet<>();
 
-        Map<Integer, List<Integer>> edgesMap = new HashMap<>();
+        DSU dsu = new DSU(edges.length);
         for (int[] edge: edges)
         {
-            edgesMap.putIfAbsent(edge[0], new ArrayList<>());
-            edgesMap.get(edge[0]).add(edge[1]);
-
-            edgesMap.putIfAbsent(edge[1], new ArrayList<>());
-            edgesMap.get(edge[1]).add(edge[0]);
-        }
-
-        boolean cycleFound = dfs(1, -1, edgesMap);
-        System.out.println(path);
-        if (!cycleFound) return new int[0];
-
-        for (int i=edges.length-1; i>=0; i--)
-        {
-            if (path.contains(edges[i][0]) && path.contains(edges[i][1])) return edges[i];
+            if (!dsu.join(edge[0], edge[1])) return edge;
         }
 
         return new int[0];
 
     }
 
-    private boolean dfs (int node, int parent, Map<Integer, List<Integer>> edgesMap)
+    class DSU
     {
-        if (path.contains(node)) {
-            // cycle detected;
-            HashSet<Integer> nonCycle = new HashSet<>();
-            //keep only cycle nodes
-            Iterator<Integer> iterator = path.iterator();
-            while(iterator.hasNext())
+        int[] parents;
+        int[] ranks;
+
+        DSU(int n)
+        {
+            parents = new int[n + 1];
+            for (int i=1; i<=n; i++)
             {
-                int n = iterator.next();
-                if (n == node) break;
-                nonCycle.add(n);
+                parents[i] = i;
             }
-            path.removeAll(nonCycle);
+            ranks = new int[n + 1];
+        }
+
+        public boolean join(int nodeA, int nodeB)
+        {
+            int parentA = find(nodeA);
+            int parentB = find(nodeB);
+
+            if (parentA == parentB) return false; //cycle
+
+            int rankA = ranks[parentA];
+            int rankB = ranks[parentB];
+
+            if (rankA < rankB)
+            {
+                parents[parentA] = parentB;
+            } else if (rankA > rankB)
+            {
+                parents[parentB] = parentA;
+            } else {
+                parents[parentB] = parentA;
+                ranks[parentA] += 1;
+            }
+
             return true;
         }
 
-        path.add(node);
-
-        List<Integer> children = edgesMap.getOrDefault(node, Collections.emptyList());
-        for (int child: children)
+        public int find(int node)
         {
-            if (child == parent) continue;
+            int parent = parents[node];
+            if (parent == node)
+            {
+                return parent;
+            }
 
-            if (dfs(child, node, edgesMap)) return true;
+            int root = find(parent);
+            parents[node] = root;
+
+            return root;
         }
-
-        path.remove(node);
-        return false;
     }
 }
