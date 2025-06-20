@@ -1,62 +1,37 @@
 class Solution {
     public boolean validPath(int n, int[][] edges, int source, int destination) {
-        DisjointUnionSets unionSets = new DisjointUnionSets(n);
-        for (int[] edge : edges) {
-            unionSets.union(edge[0], edge[1]);
-        }
-
-        int sourceRep = unionSets.find(source);
-        int destRep = unionSets.find(destination);
-
-        return sourceRep == destRep;
-    }
-
-    private final class DisjointUnionSets
-    {
-        int[] parent;
-        int[] rank;
-
-        DisjointUnionSets(int n) {
-            parent = new int[n];
-            rank = new int[n];
-            for (int i=0; i < n; i++)
-            {
-                parent[i] = i;
-                rank[i] = 1;
-            }
-        }
-
-        int find(int x)
+        if (source == destination) return true;
+        
+        Map<Integer, List<Integer>> adjMap = new HashMap<>();
+        for (int[] edge: edges)
         {
-            if (parent[x] == x)
-            {
-                return x;
-            } else {
-                int result =  find(parent[x]);
+            adjMap.putIfAbsent(edge[0], new ArrayList<>());
+            adjMap.get(edge[0]).add(edge[1]);
 
-                // path compression - put parent[x] derectly under representative
-                parent[x] = result;
-
-                return result;
-            }
+            adjMap.putIfAbsent(edge[1], new ArrayList<>());
+            adjMap.get(edge[1]).add(edge[0]);
         }
 
-        void union(int x, int y)
+        Set<Integer> visited = new HashSet<>();
+        LinkedList<Integer> queue = new LinkedList<>();
+        visited.add(source);
+        queue.offer(source);
+
+        while (queue.size() > 0)
         {
-            int repX = find(x);
-            int repY = find(y);
+            int vertex = queue.poll();
 
-            if (rank[x] < rank[y])
+            for (int nextVertex : adjMap.get(vertex))
             {
-                parent[repX] = repY;
-            }
-            else if (rank[x] > rank[y])
-            {
-                parent[repY] = repX;
-            } else {
-                parent[repY] = repX;
-                rank[x] = rank[x] + 1;
+                if (nextVertex == destination) return true;
+                if (visited.contains(nextVertex)) continue;
+
+                visited.add(nextVertex);
+                queue.offer(nextVertex);
             }
         }
+
+        return false;
+
     }
 }
