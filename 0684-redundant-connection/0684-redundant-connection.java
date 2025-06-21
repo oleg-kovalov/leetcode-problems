@@ -19,11 +19,12 @@ class Solution {
         DSU(int n)
         {
             parents = new int[n + 1];
-            for (int i=1; i<=n; i++)
+            sizes = new int[n + 1];
+            for (int i=1; i < n+1; i++)
             {
                 parents[i] = i;
+                sizes[i] = 1;
             }
-            sizes = new int[n + 1];
         }
 
         public boolean join(int nodeA, int nodeB)
@@ -39,14 +40,14 @@ class Solution {
             if (sizeA < sizeB)
             {
                 parents[parentA] = parentB;
-                sizes[parentB] += 1;
+                sizes[parentB] += sizes[parentA];
             } else if (sizeA > sizeB)
             {
                 parents[parentB] = parentA;
-                sizes[parentA] += 1;
+                sizes[parentA] += sizes[parentB];
             } else {
                 parents[parentB] = parentA;
-                sizes[parentA] += 1;
+                sizes[parentA] += sizes[parentB];
             }
 
             return true;
