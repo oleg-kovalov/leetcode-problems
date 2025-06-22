@@ -1,33 +1,21 @@
 class Solution {
-    Integer[] cache;
     public int rob(int[] nums) {
         if (nums.length == 1) return nums[0];
-        if (nums.length == 2) return Math.max(nums[0], nums[1]);
+        if (nums.length == 2) return (nums[0] > nums[1] ? nums[0] : nums[1]);
 
-        cache = new Integer[nums.length];
-        int result = 0;
-        for (int i=0; i<2; i++)
+        int[] dp = new int[nums.length];
+        dp[0] = nums[0];
+        dp[1] = Math.max(nums[1], dp[0]);
+
+        for (int i=2; i<nums.length; i++)
         {
-            result = Math.max(result, maxRobbery(i, nums));
+            // maximize result between 2 choises: 
+            // rob current house, add gain from all prev houses but not neighbor
+            // skip current house, add gain from all prev houses including neighbor
+            dp[i] = Math.max(dp[i-2] + nums[i], dp[i-1]);
         }
 
-        return result;
-    }
+        return dp[nums.length - 1];
 
-    private int maxRobbery(int current, int[] nums)
-    {
-        if (cache[current] != null)
-            return cache[current];
-
-        int nextRobberies = 0;
-        for (int i=current+2; i < nums.length; i++)
-        {
-            nextRobberies = Math.max(nextRobberies, maxRobbery(i, nums));
-        }
-
-        int currentRobbery = nextRobberies + nums[current];
-
-        cache[current] = currentRobbery;
-        return currentRobbery;
     }
 }
