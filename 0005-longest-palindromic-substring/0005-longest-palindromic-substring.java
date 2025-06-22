@@ -1,51 +1,39 @@
 class Solution {
     public String longestPalindrome(String s) {
-        int longestStart = 0;
-        int longestEnd = 0;
 
-        for (int i=0; i < s.length(); i++)
+        String result = "";
+
+        for (int i=0; i<s.length(); i++)
         {
-            char current = s.charAt(i);
+            // palindrome of odd length
+            int l=i;
+            int r=i;
 
-            if (0 <= i-1 && i+1 < s.length()
-                && s.charAt(i-1) == s.charAt(i+1) )
+            while (0 <= l && r < s.length() && s.charAt(l) == s.charAt(r))
             {
-                // middle of palindrom type ABA
-                int start = i-1;
-                int end = i+1;
-
-                while (0 <= start-1 && end+1 < s.length() && s.charAt(start-1) == s.charAt(end+1))
+                if (r - l + 1 > result.length())
                 {
-                    start = start - 1;
-                    end = end + 1;
+                    result = s.substring(l, r+1);
                 }
-                if (end+1 - start > longestEnd - longestStart)
-                {
-                    longestStart = start;
-                    longestEnd = end;
-                }
+                l -= 1;
+                r += 1;
             }
 
-            if (i+1 < s.length() && current == s.charAt(i+1))
+            // palindrome of even length
+            l=i;
+            r=i+1;
+
+            while (0 <= l && r < s.length() && s.charAt(l) == s.charAt(r))
             {
-                // middle of palindrom type AA
-                int start = i;
-                int end = i+1;
-
-                while (0 <= start-1 && end+1 < s.length() && s.charAt(start-1) == s.charAt(end+1))
+                if (r - l + 1 > result.length())
                 {
-                    start = start - 1;
-                    end = end + 1;
+                    result = s.substring(l, r+1);
                 }
-                if (end+1 - start > longestEnd - longestStart)
-                {
-                    longestStart = start;
-                    longestEnd = end;
-                }
+                l -= 1;
+                r += 1;
             }
-
         }
 
-        return s.substring(longestStart, longestEnd+1);
+        return result;
     }
 }
