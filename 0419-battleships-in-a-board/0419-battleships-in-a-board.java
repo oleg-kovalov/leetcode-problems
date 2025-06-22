@@ -31,11 +31,13 @@ class Solution {
 
                         if (0 <= newRow && newRow < rows
                             && 0 <= newCol && newCol < cols
-                            && !visited[newRow][newCol]
-                            && board[newRow][newCol] == 'X')
+                            && !visited[newRow][newCol])
                         {
                             visited[newRow][newCol] = true;
-                            queue.offer(new int[] {newRow, newCol});
+                            if (board[newRow][newCol] == 'X')
+                            {
+                                queue.offer(new int[] {newRow, newCol});
+                            }
                         }
                     }
                 }
