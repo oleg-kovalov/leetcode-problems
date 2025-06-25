@@ -1,42 +1,39 @@
 class Solution {
-    Map<Integer, Integer> cache = new HashMap<>();
+    Map<Integer, Integer> memo = new HashMap<>();
 
     public int numDecodings(String s) {
-
-        return numDecodingsRec(0, s);
+        return recursiveWithMemo(0, s);
     }
 
-    private int numDecodingsRec(int index, String s)
-    {
-        if (cache.containsKey(index))
-        {
-            return cache.get(index);
+    private int recursiveWithMemo(int index, String str) {
+        // Have we already seen this substring?
+        if (memo.containsKey(index)) {
+            return memo.get(index);
         }
 
-        if (index == s.length())
-        {
+        // If you reach the end of the string
+        // Return 1 for success.
+        if (index == str.length()) {
             return 1;
         }
 
-        if (s.charAt(index) == '0')
-        {
+        // If the string starts with a zero, it can't be decoded
+        if (str.charAt(index) == '0') {
             return 0;
         }
 
-        if (index == s.length() - 1)
-        {
-            return 1;
+        // if (index == str.length() - 1) {
+        //     return 1;
+        // }
+
+        int ans = recursiveWithMemo(index + 1, str);
+        if (index + 1 < str.length() && Integer.parseInt(str.substring(index, index + 2)) <= 26) {
+            ans += recursiveWithMemo(index + 2, str);
         }
 
+        // Save for memoization
+        memo.put(index, ans);
 
-        int count = numDecodingsRec(index + 1, s);
-        if (Integer.parseInt(s.substring(index, index+2)) <= 26)
-        {
-            count += numDecodingsRec(index+2, s);
-        }
-
-        cache.put(index, count);
-
-        return count;
+        return ans;
     }
 }
