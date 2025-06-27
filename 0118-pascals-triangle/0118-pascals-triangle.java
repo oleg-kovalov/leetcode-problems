@@ -1,21 +1,28 @@
 class Solution {
     public List<List<Integer>> generate(int numRows) {
-        List<List<Integer>> rows = new LinkedList<>();
-        for (int i = 0; i < numRows; i++) {
-            if (i == 0) rows.add(i, List.of(1));
-            else if (i == 1) rows.add(i, List.of(1, 1));
-            else {
-                List<Integer> prevRow = rows.get(i - 1);
-                List<Integer> currRow = new ArrayList<>();
-                currRow.add(1);
-                for (int j = 0; j < prevRow.size() - 1; j++) {
-                    currRow.add(j + 1, prevRow.get(j) + prevRow.get(j + 1));
-                }
-                currRow.add(1);
-                rows.add(i, currRow);
+        List<List<Integer>> result = new ArrayList<>();
+        
+        result.add(List.of(1));
+        if (numRows == 1) return result;
+
+        result.add(List.of(1,1));
+        if (numRows == 2) return result;
+
+        for (int i=2; i<numRows; i++)
+        {
+            List<Integer> curr = new ArrayList<>();
+            List<Integer> prev = result.get(result.size() - 1);
+
+            curr.add(1);
+            for (int j=1; j<prev.size(); j++)
+            {
+                curr.add(prev.get(j-1) + prev.get(j));
             }
+            curr.add(1);
+
+            result.add(curr);
         }
 
-        return rows;
+        return result;
     }
 }
