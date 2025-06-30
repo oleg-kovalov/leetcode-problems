@@ -1,35 +1,31 @@
 class Solution {
-    int[] memo;
-
     public int coinChange(int[] coins, int amount) {
         if (amount == 0) return 0;
 
-        memo = new int[amount + 1];
-        
-        int result = backtrack(amount, coins);
-        
-        if (result >= 1000_000_000) return -1;
-        return result;
-
-    }
-
-    private int backtrack(int amount, int[] coins)
-    {
-        if (amount == 0) return 0;
-        if (amount < 0) return 1000_000_000;
-
-        if (memo[amount] > 0) return memo[amount];
-
-        int result = Integer.MAX_VALUE;
-        for (int i=0; i<coins.length; i++)
+        int[] dp = new int[amount + 1];
+        for (int i=0; i<dp.length; i++)
         {
-            result = Math.min(result, 1 + backtrack(amount - coins[i], coins));
+            dp[i] = 1000_000_000;
+        }        
+
+        dp[0] = 0;
+        // for (int coin: coins)
+        // {
+        //     dp[coin] = 1;
+        // }
+
+        for (int i=1; i<amount+1; i++)
+        {
+            for (int coin: coins)
+            {
+                if (i - coin >= 0)
+                {
+                    dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+                }
+            }   
         }
 
-        memo[amount] = result;
-        return result;
-
+        if (dp[amount] > 10_001) return -1;
+        return dp[amount];
     }
-
-
 }
