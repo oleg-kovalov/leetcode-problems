@@ -1,37 +1,35 @@
 class Solution {
-        HashMap<Integer, Integer> memo;
-        public int coinChange(int[] coins, int amount)
+    int[] memo;
+
+    public int coinChange(int[] coins, int amount) {
+        if (amount == 0) return 0;
+
+        memo = new int[amount + 1];
+        
+        int result = backtrack(amount, coins);
+        
+        if (result >= 1000_000_000) return -1;
+        return result;
+
+    }
+
+    private int backtrack(int amount, int[] coins)
+    {
+        if (amount == 0) return 0;
+        if (amount < 0) return 1000_000_000;
+
+        if (memo[amount] > 0) return memo[amount];
+
+        int result = Integer.MAX_VALUE;
+        for (int i=0; i<coins.length; i++)
         {
-            memo = new HashMap<>();
-
-            return backtrack(coins, amount);
-
+            result = Math.min(result, 1 + backtrack(amount - coins[i], coins));
         }
 
-        private int backtrack(int[] coins, int remainingAmount)
-        {
-            if (remainingAmount < 0) return -1;
-            if (memo.containsKey(remainingAmount)) return memo.get(remainingAmount);
+        memo[amount] = result;
+        return result;
 
-            if (remainingAmount == 0) return 0;
+    }
 
 
-            int minRes = Integer.MAX_VALUE;
-            for (int coin : coins)
-            {
-                int res = backtrack(coins, remainingAmount - coin);
-                if (res >= 0 && res < minRes)
-                {
-                    minRes = res + 1;
-                }
-            }
-
-            if (minRes == Integer.MAX_VALUE) {
-                minRes = -1;
-            }
-
-            memo.put(remainingAmount, minRes);
-            return minRes;
-        }
-    
 }
