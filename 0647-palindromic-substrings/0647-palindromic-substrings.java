@@ -1,37 +1,34 @@
 class Solution {
-        public int countSubstrings(String s) {
-            boolean[][] dp = new boolean[s.length()][s.length()];
-            int result = 0;
+    public int countSubstrings(String s) {
+        int n = s.length();
+        int count = 0;
 
-            for (int i=0; i<s.length(); i++)
+        for (int center=0; center < n; center++)
+        {
+            // palindromes with odd length, with center as single char
+            int left = center;
+            int right = center;
+            while (0 <= left && right < n && s.charAt(left) == s.charAt(right))
             {
-                // base case - one-letter palindromes
-                dp[i][i] = true;
-                result++;
+                count += 1;
+                left -= 1;
+                right += 1;
             }
 
-            for (int i=0; i<s.length()-1; i++)
+            if (center < n - 1 && s.charAt(center) == s.charAt(center + 1))
             {
-                // base case - two-letter palindromes
-                dp[i][i+1] = (s.charAt(i) == s.charAt(i+1));
-                if (dp[i][i+1]) result++;
-            }
-
-            // all other cases are expansions of palindromes with one-letter or two-letter centers
-            for (int n=3; n <= s.length(); n++)
-            {
-                for (int i=0; i <= s.length() - n; i++)
+                // palindromes with even length, with center has 2 chars
+                left = center;
+                right = center + 1;
+                while (0 <= left && right < n && s.charAt(left) == s.charAt(right))
                 {
-                    int start = i;
-                    int end = i+n-1;
-                    dp[start][end] = dp[start+1][end-1] && (s.charAt(start) == s.charAt(end));
-                    if (dp[start][end]) result++;
+                    count += 1;
+                    left -= 1;
+                    right += 1;
                 }
             }
-
-            // System.out.println(result);
-
-            return result;
-
         }
+
+        return count;
+    }
 }
