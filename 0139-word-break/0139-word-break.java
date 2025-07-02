@@ -1,29 +1,38 @@
 class Solution {
+    Set<String> dict;
+    Boolean[][] memo;
 
-    HashSet<Integer> cache = new HashSet<>(); 
     public boolean wordBreak(String s, List<String> wordDict) {
+        dict = new HashSet<>(wordDict);
+        memo = new Boolean[s.length() + 1][s.length() + 1];
 
-        return rec(0, s, wordDict);
 
+        return dfs(0, 1, s);
     }
 
-    private boolean rec(int idx, String s, List<String> wordDict) 
-    {
-        if (cache.contains(idx)) return false;
-        
-        if (idx == s.length()) return true;
-        // if (idx > s.length()) return false;
 
-        for (String chunk: wordDict)
+    private boolean dfs(int start, int end, String s)
+    {
+        if (end == s.length() + 1)
         {
-            if (idx + chunk.length() -1 < s.length() && s.substring(idx, idx + chunk.length()).equals(chunk))
-            {
-                if (rec(idx + chunk.length(), s, wordDict)) return true;
-            }
+            return start == s.length(); 
         }
 
-        cache.add(idx);
+        if (memo[start][end] != null) return memo[start][end];
 
-        return false;
+
+        if (dict.contains(s.substring(start, end)))
+        {
+            // 2 options: take match or skip it
+            return memo[start][end] = 
+                dfs(end, end + 1, s) // take
+                || dfs(start, end + 1, s); //skip
+        } else {
+            return memo[start][end] = 
+                dfs(start, end + 1, s); // skip
+        }
+
     }
+
+
 }
