@@ -1,38 +1,30 @@
 class Solution {
-    Set<String> dict;
-    Boolean[][] memo;
+    public boolean wordBreak(String s, List<String> wordDict) { // catsandog
+    //                                                                ^
+        
+        // Set<String> dict = new HashSet<>(wordDict);
 
-    public boolean wordBreak(String s, List<String> wordDict) {
-        dict = new HashSet<>(wordDict);
-        memo = new Boolean[s.length() + 1][s.length() + 1];
-
-
-        return dfs(0, 1, s);
-    }
+        boolean[] dp = new boolean[s.length() + 1]; // t f f t
 
 
-    private boolean dfs(int start, int end, String s)
-    {
-        if (end == s.length() + 1)
+        dp[0] = true;
+        for (int start=0; start < s.length(); start++)
         {
-            return start == s.length(); 
+            int i = start + 1;
+            dp[i] = false;
+            for (String word: wordDict) // cat
+            {
+                dp[i] |= (start - word.length() + 1 >= 0 
+                    && s.substring(start - word.length() + 1, start + 1).equals(word) 
+                    && dp[start - word.length() + 1]);
+                if (dp[i]) break;
+            }  
+
         }
+        System.out.println(Arrays.toString(dp));
 
-        if (memo[start][end] != null) return memo[start][end];
+        return dp[s.length()];
 
-
-        if (dict.contains(s.substring(start, end)))
-        {
-            // 2 options: take match or skip it
-            return memo[start][end] = 
-                dfs(end, end + 1, s) // take
-                || dfs(start, end + 1, s); //skip
-        } else {
-            return memo[start][end] = 
-                dfs(start, end + 1, s); // skip
-        }
 
     }
-
-
 }
