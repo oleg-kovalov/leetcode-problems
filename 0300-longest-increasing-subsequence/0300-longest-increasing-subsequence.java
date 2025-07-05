@@ -1,31 +1,24 @@
 class Solution {
     public int lengthOfLIS(int[] nums) {
+        HashMap<Integer, Integer> numToLen = new HashMap<>();
 
-        // index of first element to subsequence
-        Map<Integer, Integer> cachedIS = new HashMap<>();
-
-        for (int c=nums.length-1; c >=0; c--)
+        for (int num: nums)
         {
-            int current = nums[c];
-            cachedIS.put(c, 1);
-            for (int n=c+1; n<nums.length; n++)
+            int len = 1;
+            for (Map.Entry<Integer, Integer> entry: numToLen.entrySet())
             {
-                if (current >= nums[n])
-                {
-                    continue;
-                }
-
-                if (cachedIS.containsKey(n)) {
-                    Integer isLength = cachedIS.get(n);
-                    cachedIS.merge(c, isLength+1, Integer::max);
-                }
-
+                if (entry.getKey() >= num) continue;
+                len = Math.max(len, entry.getValue() + 1);
             }
+            numToLen.put(num, len);
         }
 
-        int maxIS = cachedIS.values().stream().mapToInt(Integer::intValue).max().orElse(1);
+        int result = 1;
+        for (int value: numToLen.values())
+        {
+            result = Math.max(result, value);
+        }
 
-        return maxIS;
-
+        return result;
     }
 }
