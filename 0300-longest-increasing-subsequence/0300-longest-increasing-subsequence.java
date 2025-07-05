@@ -1,24 +1,23 @@
 class Solution {
     public int lengthOfLIS(int[] nums) {
-        HashMap<Integer, Integer> numToLen = new HashMap<>();
-
-        for (int num: nums)
-        {
-            int len = 1;
-            for (Map.Entry<Integer, Integer> entry: numToLen.entrySet())
-            {
-                if (entry.getKey() >= num) continue;
-                len = Math.max(len, entry.getValue() + 1);
-            }
-            numToLen.put(num, len);
-        }
+        int n = nums.length;
 
         int result = 1;
-        for (int value: numToLen.values())
+        int[] dp = new int[n];
+        dp[0] = 1;
+
+        for (int i=1; i<n; i++)
         {
-            result = Math.max(result, value);
+            dp[i] = 1;
+            for (int j=0; j<i; j++)
+            {
+                if (nums[j] < nums[i]) 
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+            result = Math.max(result, dp[i]);
         }
 
         return result;
+
     }
 }
