@@ -1,27 +1,30 @@
 class Solution {
-
-    Boolean[][] cache;
     public boolean canPartition(int[] nums) {
+
         int sum = 0;
         for (int num: nums) sum += num;
 
-        cache = new Boolean[nums.length][sum + 1];
-        
-        return dfs(0, 0, 0, nums);
-    }
+        if ( sum % 2 != 0) return false;
 
-    private boolean dfs(int sum1, int sum2, int i, int[] nums)
-    {
-        if (i == nums.length)
+        Boolean[][] dp = new Boolean[nums.length][sum / 2 + 1];        
+        dp[0][0] = false;
+        if (nums[0] <= sum / 2) dp[0][nums[0]] = false;
+
+        for (int i=1; i<nums.length; i++)
         {
-            return sum1 == sum2;
+            for (int prev=0; prev < sum / 2; prev++)
+            {
+                if (dp[i-1][prev] == null) continue;
+                dp[i][prev] = dp[i-1][prev];
+                if (prev + nums[i] <= sum / 2) dp[i][prev + nums[i]] = (prev + nums[i] == sum / 2);
+            }
         }
-        int abs = Math.abs(sum1 - sum2);
 
-        if (cache[i][abs] != null) return cache[i][abs];  
+        for (int s=0; s<sum/2 + 1; s++)
+        {
+            if (Boolean.TRUE.equals(dp[nums.length - 1][s])) return true;
+        }
 
-        return cache[i][abs] = dfs(sum1 + nums[i], sum2, i+1, nums)
-                            || dfs(sum1, sum2 + nums[i], i+1, nums);
-
+        return false;
     }
 }
