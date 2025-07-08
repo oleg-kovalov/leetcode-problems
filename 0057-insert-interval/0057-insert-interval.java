@@ -12,11 +12,11 @@ class Solution {
             starts.put(start, starts.getOrDefault(start, 0) + 1);
             ends.put(end, ends.getOrDefault(end, 0) + 1);
         }
-        starts.put(newInterval[0], starts.getOrDefault(newInterval[0], + 1));
-        ends.put(newInterval[1], ends.getOrDefault(newInterval[1], + 1));
+        starts.put(newInterval[0], starts.getOrDefault(newInterval[0], 0) + 1);
+        ends.put(newInterval[1], ends.getOrDefault(newInterval[1], 0) + 1);
 
-        // System.out.println(starts);
-        // System.out.println(ends);
+        System.out.println(starts);
+        System.out.println(ends);
 
         List<int[]> result = new ArrayList<>();
         int maxEnd = Math.max(newInterval[1], intervals[intervals.length-1][1]);
