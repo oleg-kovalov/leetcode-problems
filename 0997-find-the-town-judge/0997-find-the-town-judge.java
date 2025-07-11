@@ -1,25 +1,28 @@
 class Solution {
     public int findJudge(int n, int[][] trust) {
-        int[] numOfPeopleTrustMe = new int[n];
-        int[] numOfPeopleItrust = new int[n];
+        if (n == 1) return 1;
+        
+        Map<Integer, Integer> trustCount = new HashMap<>();
+        Map<Integer, List<Integer>> adjMap = new HashMap<>();
+        for (int[] t: trust)
+        {
+            adjMap.putIfAbsent(t[0], new ArrayList<>());
+            adjMap.get(t[0]).add(t[1]);
 
-        for (int[] t : trust)
-        {            
-            numOfPeopleItrust[t[0]-1]++;
-            numOfPeopleTrustMe[t[1]-1]++;
+            trustCount.put(t[1], trustCount.getOrDefault(t[1], 0) + 1);
         }
 
-        for (int i=0; i<numOfPeopleTrustMe.length; i++)
+
+        for (Map.Entry<Integer,Integer> entry: trustCount.entrySet())
         {
-            if (numOfPeopleTrustMe[i] == n-1)
+            if (entry.getValue() == n - 1) 
             {
-                if (numOfPeopleItrust[i] == 0)
-                {
-                    return i+1;
-                }
-            }
+                int judge = entry.getKey();
+                return adjMap.containsKey(judge) ? -1 : judge;
+            }                
         }
 
         return -1;
+
     }
 }
