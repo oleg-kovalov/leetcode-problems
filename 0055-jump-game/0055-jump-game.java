@@ -11,7 +11,7 @@ class Solution {
 
             for (int j=i+1; j<i+num+1; j++)
             {
-                if (j == nums.length) return true; // already enough jump
+                if (j == nums.length - 1) return true; // already enough jump
                 dp[j] = true;
             }
         }
