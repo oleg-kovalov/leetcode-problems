@@ -1,17 +1,20 @@
 class Solution {
     public boolean canJump(int[] nums) {
-        if (nums.length == 1) return true;
         
-        int reachable = nums.length-1;
-        for (int i=nums.length-2; i>=0; i--)
+        boolean[] dp = new boolean[nums.length];
+        dp[0] = true;
+
+        for (int i=0; i<nums.length; i++)
         {
-            if (i + nums[i] >= reachable)
+            int num = nums[i];
+            for (int j=i+1; j<i+num+1; j++)
             {
-                reachable = i;
+                if (j == nums.length) break;
+                dp[j] = dp[i];
             }
         }
 
-        return reachable == 0;
-
+        // System.out.println(Arrays.toString(dp));
+        return dp[nums.length - 1];
     }
 }
