@@ -1,35 +1,24 @@
 class Solution {
-    public int jump(int[] nums) {
+    public int jump(int[] nums) { // 2, 3, 1, 0, 2, 2, 3
+        if (nums.length == 1) return 0;
 
-        // cost, index
-        PriorityQueue<int[]> minHeap = new PriorityQueue<>((a,b) -> Integer.compare(a[0],b[0]));
-        minHeap.offer(new int[] {0,0});
-        
-        int[] cache = new int[nums.length];
-        Arrays.fill(cache, Integer.MAX_VALUE);
-        cache[0] = 0;
-
-        while (minHeap.size() > 0)
+        int start = 0; // 2
+        int far = nums[0]; // 6
+        int cost = 1; // 0
+        while (far < nums.length - 1)  
         {
-            int[] pos = minHeap.poll();
-            int cost = pos[0], idx = pos[1];
-            int jump = nums[idx];
-
-            if (idx == nums.length - 1) return cost;
-
-            for (int i=idx + 1; i < idx + jump + 1; i++)
+            int prevFar = far;
+            for (int i=start+1; i < prevFar+1; i++)  // 3 .. 4
             {
-                if (i == nums.length) break;
-
-                if (cache[i] <= cost + 1) continue;
-
-                minHeap.offer(new int[] {cost + 1, i});
-                cache[i] = cost + 1;
+                if (i == nums.length - 1) return cost;
+                far = Math.max(far, i + nums[i]);
             }
+
+            cost += 1;
+            start = prevFar;
         }
 
-
-        return -1;
+        return cost;
     
     }
 }
