@@ -1,47 +1,37 @@
 class Solution {
     public boolean isNStraightHand(int[] hand, int groupSize) {
+        
         if (hand.length % groupSize != 0) return false;
         int numGroups = hand.length / groupSize;
 
         Arrays.sort(hand);
-        
-        List<List<Integer>> groups = new ArrayList<>();
-        List<Integer> group0 = new ArrayList<>();
-        group0.add(hand[0]);
-        groups.add(group0);
+
+        // highest card, size
+        PriorityQueue<int[]> minHeap = new PriorityQueue<>((a,b) -> Integer.compare(a[0],b[0]));
+        minHeap.offer(new int[] {hand[0], 1});
+        int groupCount = 1;
+
 
         for (int i=1; i<hand.length; i++)
         {
             int num = hand[i];
-            boolean added = false;
-            for (List<Integer> group: groups)
-            {
-                if (group.size() < groupSize && group.get(group.size() - 1) == num -1)
-                {
-                    group.add(num);
-                    added = true;
-                    break;
+
+            int[] group = minHeap.peek();
+            if (group != null && group[0] == num - 1) {
+                minHeap.poll();
+                if (group[1] + 1 < groupSize) {
+                    minHeap.offer(new int[] {num, group[1] + 1});
                 }
-            }
-
-            if (added) continue;
-
-            if (groups.size() < numGroups)
+            } else if (groupCount < numGroups)
             {
-                List<Integer> newGroup = new ArrayList<>();
-                newGroup.add(num);
-                groups.add(newGroup);
+                minHeap.offer(new int[] {num, 1});
+                groupCount += 1;
             } else {
                 return false;
             }
         }
 
-        // if (groups.size() != groupSize) return false;
-        // for (List<Integer> group: groups)
-        // {
-        //     if (group.size() != groupSize) return false;
-        // }
-
         return true;
+        
     }
 }
