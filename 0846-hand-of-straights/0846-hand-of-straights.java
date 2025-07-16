@@ -1,43 +1,47 @@
 class Solution {
     public boolean isNStraightHand(int[] hand, int groupSize) {
         if (hand.length % groupSize != 0) return false;
+        int numGroups = hand.length / groupSize;
 
-        Map<Integer, Integer> freq = new TreeMap<>();
-        for (int card: hand)
+        Arrays.sort(hand);
+        
+        List<List<Integer>> groups = new ArrayList<>();
+        List<Integer> group0 = new ArrayList<>();
+        group0.add(hand[0]);
+        groups.add(group0);
+
+        for (int i=1; i<hand.length; i++)
         {
-            freq.put(card, freq.getOrDefault(card, 0) + 1);
-        }
-        int groupNum = hand.length / groupSize;
-
-        for (int group=0; group < groupNum; group++)
-        {
-            int curr = freq.keySet().iterator().next();
-            if (freq.get(curr) == 1) 
+            int num = hand[i];
+            boolean added = false;
+            for (List<Integer> group: groups)
             {
-                freq.remove(curr);
-            } else {
-                freq.put(curr, freq.get(curr) - 1);
-            }
-
-            int target = curr + 1;
-            for (int i=0; i<groupSize - 1; i++)
-            {
-                if (freq.containsKey(target))
+                if (group.size() < groupSize && group.get(group.size() - 1) == num -1)
                 {
-                    if (freq.get(target) == 1) 
-                    {
-                        freq.remove(target);
-                    } else {
-                        freq.put(target, freq.get(target) - 1);
-                    }
-                    target += 1;
-                } else {
-                    return false;
+                    group.add(num);
+                    added = true;
+                    break;
                 }
             }
+
+            if (added) continue;
+
+            if (groups.size() < numGroups)
+            {
+                List<Integer> newGroup = new ArrayList<>();
+                newGroup.add(num);
+                groups.add(newGroup);
+            } else {
+                return false;
+            }
         }
 
-        return true;
+        // if (groups.size() != groupSize) return false;
+        // for (List<Integer> group: groups)
+        // {
+        //     if (group.size() != groupSize) return false;
+        // }
 
+        return true;
     }
 }
