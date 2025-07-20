@@ -1,31 +1,40 @@
 class Solution {
     public boolean checkValidString(String s) {
 
+        LinkedList<Integer> openStack = new LinkedList<>(); // positions of open brackets
+        LinkedList<Integer> starStack = new LinkedList<>(); // positions of wildcards
 
-        boolean[][] dp = new boolean[s.length()+ 1][s.length()+1]; // balance: close +1, open -1 
-        dp[s.length()][0] = true;
-        for (int i=s.length()-1; i>=0; i--)
+        for (int i=0; i<s.length(); i++)
         {
             char c = s.charAt(i);
-            for (int j=0; j<s.length(); j++)
+            if (c == '(')
             {
-                if (c == ')')
+                openStack.push(i);
+            } else if (c == ')')
+            {
+                if (openStack.size() > 0)
                 {
-                    dp[i][j] = (j-1 < 0 ? false : dp[i+1][j-1]);
-                } else if (c == '(')
+                    openStack.pop();
+                } else if (starStack.size() > 0)
                 {
-                    dp[i][j] = dp[i+1][j+1];
+                    starStack.pop();
                 } else {
-                    dp[i][j] = dp[i+1][j] // empty
-                        || dp[i+1][j+1] // open           
-                        || (j-1 < 0 ? false : dp[i+1][j-1]); // close                    
+                    return false;
                 }
+            } else {
+                starStack.push(i);
             }
         }
 
-        // for (int i=0; i<dp.length; i++)
-        //     System.out.println(Arrays.toString(dp[i]));
+        while (openStack.size() > 0)
+        {
+            int openPos = openStack.pop();
+            if (starStack.size() == 0) return false;
+            
+            int starPos = starStack.pop();
+            if (openPos > starPos) return false;
+        }
 
-        return dp[0][0];
+        return true;
     }
 }
