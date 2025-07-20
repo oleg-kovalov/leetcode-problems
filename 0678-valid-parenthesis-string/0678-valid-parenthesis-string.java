@@ -1,32 +1,31 @@
 class Solution {
-    Boolean[][] visited;
     public boolean checkValidString(String s) {
-        
-        visited = new Boolean[s.length()][s.length()];
-        return backtrack(0, 0, s);
 
-    }
 
-    private boolean backtrack(int idx, int balance, String s)
-    {
-        if (idx == s.length()) return balance == 0;
-
-        if (balance < 0) return false; // more close brackets than open
-
-        if (visited[idx][balance] != null) return visited[idx][balance];
-
-        char c = s.charAt(idx);
-        if (c == '(')
+        boolean[][] dp = new boolean[s.length()+ 1][s.length()+1]; // balance: close +1, open -1 
+        dp[s.length()][0] = true;
+        for (int i=s.length()-1; i>=0; i--)
         {
-            return visited[idx][balance] = backtrack(idx + 1 , balance + 1, s);
-        } else if (c == ')')
-        {
-            return visited[idx][balance] = backtrack(idx + 1, balance - 1, s);
-        } else {
-            return visited[idx][balance] = 
-            backtrack(idx + 1, balance, s) //empty
-            || backtrack(idx + 1, balance + 1, s) //open
-            || backtrack(idx + 1, balance - 1, s); // close 
+            char c = s.charAt(i);
+            for (int j=0; j<s.length(); j++)
+            {
+                if (c == ')')
+                {
+                    dp[i][j] = (j-1 < 0 ? false : dp[i+1][j-1]);
+                } else if (c == '(')
+                {
+                    dp[i][j] = dp[i+1][j+1];
+                } else {
+                    dp[i][j] = dp[i+1][j] // empty
+                        || dp[i+1][j+1] // open           
+                        || (j-1 < 0 ? false : dp[i+1][j-1]); // close                    
+                }
+            }
         }
+
+        // for (int i=0; i<dp.length; i++)
+        //     System.out.println(Arrays.toString(dp[i]));
+
+        return dp[0][0];
     }
 }
