@@ -1,80 +1,76 @@
 class Solution {
 
-    public int networkDelayTime(int[][] times, int n, int k) {
+// BELLMAN FORD
+    // public int networkDelayTime(int[][] times, int n, int k) {
     
-        int[] costs = new int[n + 1]; // 1 - based idx
-        Arrays.fill(costs, Integer.MAX_VALUE);
-        costs[k] = 0;
+    //     int[] costs = new int[n + 1]; // 1 - based idx
+    //     Arrays.fill(costs, Integer.MAX_VALUE);
+    //     costs[k] = 0;
 
-        for (int i=0; i<n; i++)
-        {
-            int[] nextCosts = Arrays.copyOf(costs, costs.length);
-            for (int[] edge: times)
-            {
-                int src=edge[0], dest=edge[1], weight=edge[2];
-                if (costs[src] == Integer.MAX_VALUE) continue;
+    //     for (int i=0; i<n; i++)
+    //     {
+    //         int[] nextCosts = Arrays.copyOf(costs, costs.length);
+    //         for (int[] edge: times)
+    //         {
+    //             int src=edge[0], dest=edge[1], weight=edge[2];
+    //             if (costs[src] == Integer.MAX_VALUE) continue;
 
-                int nextCost = costs[src] + weight;
-                nextCosts[dest] = Math.min(nextCosts[dest], nextCost);
-            }
+    //             int nextCost = costs[src] + weight;
+    //             nextCosts[dest] = Math.min(nextCosts[dest], nextCost);
+    //         }
 
-            costs = nextCosts; 
-            // System.out.println(Arrays.toString(costs));
+    //         costs = nextCosts; 
+    //         // System.out.println(Arrays.toString(costs));
 
-        }
+    //     }
 
-        int result = -1;
-        for (int i=1; i<costs.length; i++)
-        {
-            if (costs[i] == Integer.MAX_VALUE) return -1; // node was unreachable
-            result = Math.max(result, costs[i]);
-        }
+    //     int result = -1;
+    //     for (int i=1; i<costs.length; i++)
+    //     {
+    //         if (costs[i] == Integer.MAX_VALUE) return -1; // node was unreachable
+    //         result = Math.max(result, costs[i]);
+    //     }
 
-        return result;
-    }
-}
+    //     return result;
+    // }
+// }
 
 
 // DIJKSTRA
 
-//     public int networkDelayTime(int[][] times, int n, int k) {
+    public int networkDelayTime(int[][] times, int n, int k) {
 
-//         Map<Integer, List<int[]>> adjMap = new HashMap<>();
-//         for (int[] time: times)
-//         {
-//             adjMap.putIfAbsent(time[0], new ArrayList<>());
-//             adjMap.get(time[0]).add(new int[] {time[1], time[2]});
-//         }
+        Map<Integer, List<int[]>> adjMap = new HashMap<>();
+        for (int[] time: times)
+        {
+            adjMap.putIfAbsent(time[0], new ArrayList<>());
+            adjMap.get(time[0]).add(new int[] {time[1], time[2]});
+        }
 
-//         Map<Integer, Integer> cache = new HashMap<>(); // node -> time
-//         PriorityQueue<int[]> minHeap = new PriorityQueue<>((a,b) -> Integer.compare(a[1],b[1])); // node, time
-//         minHeap.offer(new int[] {k, 0});
-//         cache.put(k, 0);
+        PriorityQueue<int[]> minHeap = new PriorityQueue<>((a,b) -> Integer.compare(a[1],b[1])); // node, time
+        minHeap.offer(new int[] {k, 0});
 
-//         Set<Integer> seen = new HashSet<>();
-//         seen.add(k);
-//         int minTime = -1;
+        Set<Integer> visited = new HashSet<>();
+        int minTime = -1;
 
-//         while (minHeap.size() > 0)
-//         {
-//             int[] entry = minHeap.poll();
-//             int node = entry[0], time = entry[1];
+        while (minHeap.size() > 0)
+        {
+            int[] entry = minHeap.poll();
+            int node = entry[0], time = entry[1];
 
-//             seen.add(node);
-//             minTime = Math.max(minTime, cache.get(node));
-//             if (seen.size() == n) return minTime;
+            if (visited.contains(node)) continue;
 
-//             for (int[] next: adjMap.getOrDefault(node, new ArrayList<>()))
-//             {
-//                 int nextNode = next[0], nextTime = time + next[1];
+            visited.add(node);
+            minTime = Math.max(minTime, time);
+            if (visited.size() == n) return minTime;
 
-//                 if (cache.containsKey(nextNode) && cache.get(nextNode) <= nextTime) continue;
+            for (int[] next: adjMap.getOrDefault(node, new ArrayList<>()))
+            {
+                int nextNode = next[0], nextTime = time + next[1];
+                minHeap.offer(new int[] {nextNode, nextTime});
+            }
+        }
 
-//                 minHeap.offer(new int[] {nextNode, nextTime});
-//                 cache.put(nextNode, nextTime);
-//             }
-//         }
-
-//         return -1;
-//     }
-// }
+        return -1;
+    }
+}
