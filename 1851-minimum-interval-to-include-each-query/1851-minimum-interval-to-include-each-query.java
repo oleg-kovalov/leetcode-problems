@@ -11,35 +11,39 @@ class Solution {
         {
             maxEnd = Math.max(maxEnd, interval[1]);
         }
-        int[] line = new int[maxEnd + 1];
-        Arrays.fill(line, -1);
 
-        int idx = 0;
-        for (int i=0; i<line.length; i++)
+        // point, idx 
+        PriorityQueue<int[]> minHeap2 = new PriorityQueue<>((a,b) -> Integer.compare(a[0],b[0]));
+        for (int i=0; i<queries.length; i++)
         {
-            while (idx < intervals.length && intervals[idx][0] <= i)
+            minHeap2.offer(new int[] {queries[i], i});
+        }
+
+        int[] result = new int[queries.length];
+        Arrays.fill(result, -1);
+ 
+        int iidx = 0;
+        while (minHeap2.size() > 0)
+        {
+            int[] entry = minHeap2.poll();
+            int point = entry[0], qidx = entry[1];
+
+            while (iidx < intervals.length && intervals[iidx][0] <= point)
             {
-                int end = intervals[idx][1];
-                int len = end - intervals[idx][0] + 1;
+                int end = intervals[iidx][1];
+                int len = end - intervals[iidx][0] + 1;
                 minHeap.offer(new int[] {end, len});
-                idx += 1;
+                iidx += 1;
             }
 
-            while (minHeap.size() > 0 && minHeap.peek()[0] < i)
+            while (minHeap.size() > 0 && minHeap.peek()[0] < point)
             {
                 minHeap.poll();
             }
 
             if (minHeap.size() > 0) {
-                line[i] = minHeap.peek()[1];
+                result[qidx] = minHeap.peek()[1];
             }
-        }
-        
-        int[] result = new int[queries.length];
-        for (int i=0; i<queries.length; i++)
-        {
-            int point = queries[i];
-            result[i] = point >= line.length ? -1 : line[queries[i]];
         }
 
         return result;
