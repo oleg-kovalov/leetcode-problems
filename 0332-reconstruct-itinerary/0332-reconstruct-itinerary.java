@@ -1,13 +1,12 @@
 class Solution {
-    int n;
+    Map<String, List<String>> adjMap = new HashMap<>();
+    LinkedList<String> result = new LinkedList<>();
+
     public List<String> findItinerary(List<List<String>> tickets) {
-        n = tickets.size();
 
         Collections.sort(tickets, (a,b) -> !a.get(0).equals(b.get(0)) 
             ? a.get(0).compareTo(b.get(0))
             : a.get(1).compareTo(b.get(1)));
-
-        Map<String, List<String>> adjMap = new HashMap<>();
 
         for (int i=0; i<tickets.size(); i++)
         {
@@ -18,15 +17,12 @@ class Solution {
             adjMap.get(src).add(dest);
         }
 
-        List<String> path = new ArrayList<>();
-        // path.add("JFK");
-        backtrack("JFK", path, adjMap);
+        eulerianPath("JFK");
         
-        Collections.reverse(path);
-        return path;
+        return result;
     }
 
-    private void backtrack(String city, List<String> path, Map<String, List<String>> adjMap) 
+    private void eulerianPath(String city) 
     { 
         List<String> dests = adjMap.getOrDefault(city, Collections.emptyList());
 
@@ -34,9 +30,9 @@ class Solution {
         {
             String dest = dests.get(0);
             dests.remove(0);
-            backtrack(dest, path, adjMap);
+            eulerianPath(dest);
         }
 
-        path.add(city);
+        result.addFirst(city);
     }
 }
