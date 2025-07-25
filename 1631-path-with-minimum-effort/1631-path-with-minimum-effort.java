@@ -11,7 +11,6 @@ class Solution {
         //row, col, cost
         PriorityQueue<int[]> minHeap = new PriorityQueue<>((a,b) -> Integer.compare(a[2],b[2]));
         minHeap.offer(new int[] {0, 0, 0});
-        visited[0][0] = true;
 
         while (minHeap.size() > 0)
         {
@@ -19,6 +18,8 @@ class Solution {
             int row = entry[0], col = entry[1], cost = entry[2];
 
             if (row == rows - 1 && col == cols - 1) return cost;
+
+            if (visited[row][col]) continue;
 
             visited[row][col] = true;
 
