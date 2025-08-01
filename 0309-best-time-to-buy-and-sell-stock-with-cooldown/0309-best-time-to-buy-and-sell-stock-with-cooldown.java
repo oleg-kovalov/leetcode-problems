@@ -1,24 +1,29 @@
 class Solution {
     public int maxProfit(int[] prices) {
+        int n=prices.length;
+
+        int EMPTY=0, HOLD=1, COOLDOWN=2;
+        int INVALID = (int) -1e8;
+
         
-        int[][] dp = new int[prices.length][3]; // 0 - empty, 1 - hold, 2 - cooldown
-        dp[0][0] = 0;
-        dp[0][1] = -prices[0];
-        dp[0][2] = (int)-1e8;
+        int[][] dp = new int[n][3];
+        dp[0][EMPTY] = 0;
+        dp[0][HOLD] = -prices[0];
+        dp[0][COOLDOWN] = INVALID;
 
-        for (int i=1; i<prices.length; i++)
+        for (int i=1; i<n; i++)
         {
-            dp[i][0] = Math.max(
-                dp[i-1][0], //do nothing 
-                dp[i-1][2]); //do nothing after cooldown
+            dp[i][EMPTY] = Math.max(
+                dp[i-1][EMPTY], //do nothing 
+                dp[i-1][COOLDOWN]); //do nothing after cooldown
 
-            dp[i][1] = Math.max(
-                dp[i-1][1], // do nothing
+            dp[i][HOLD] = Math.max(
+                dp[i-1][HOLD], // do nothing
                 Math.max(
-                    dp[i-1][0] - prices[i], //buy
-                    (i-2 < 0 ? (int)-1e8 : dp[i-2][2] - prices[i]))); //buy after cooldown
+                    dp[i-1][EMPTY] - prices[i], //buy
+                    (i-2 < 0 ? INVALID : dp[i-2][COOLDOWN] - prices[i]))); //buy after cooldown
 
-            dp[i][2] = dp[i-1][1] + prices[i]; // sell
+            dp[i][COOLDOWN] = dp[i-1][HOLD] + prices[i]; // sell
             
         }
 
@@ -28,10 +33,10 @@ class Solution {
         // }
 
         return Math.max(
-            dp[prices.length - 1][0],
+            dp[n-1][EMPTY],
             Math.max(
-                dp[prices.length-1][1],
-                dp[prices.length-1][2]));
+                dp[n-1][HOLD],
+                dp[n-1][COOLDOWN]));
 
     }
 }
