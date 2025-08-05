@@ -1,40 +1,45 @@
 class Solution {
 
     int[][] memo;
-    int sum = 0;
+    int sum;
+    int target;
     public int findTargetSumWays(int[] nums, int target) {
-        for (int num: nums) sum += num;
+        
+        this.target = target;
+        
+        for (int num: nums)
+        {
+            sum += num;
+        }
 
-        memo = new int[nums.length+1][2 * sum +1];
-        for (int i=0; i<nums.length+1; i++)
+        memo = new int[sum * 2 + 1][nums.length];
+        for (int i=0; i<memo.length; i++)
         {
             Arrays.fill(memo[i], -1);
         }
 
-        return backtrack(nums, 0, 0, target);
+        int result = dfs(0, 0, nums); 
+
+        // for (int i=0; i<memo.length; i++)
+        // {
+        //     System.out.println(Arrays.toString(memo[i]));
+        // }
+
+        return result;
     }
 
-    private int backtrack(int[] nums, int idx, int currTarget, int target)
+    private int dfs(int amount, int idx, int[] nums)
     {
+        if (amount == target && idx == nums.length) return 1;
+        if (idx == nums.length) return 0;
 
-        if (idx == nums.length) {
-            if (currTarget == target) {
-                return 1;
-            }
-            else {
-                return 0;
-            }
-        }
-
-        if (memo[idx][currTarget + sum] >= 0) return memo[idx][currTarget + sum];
-
-        memo[idx][currTarget + sum] = backtrack(nums, idx + 1, currTarget + nums[idx], target)
-            + backtrack(nums, idx + 1, currTarget - nums[idx], target);
+        if (memo[sum + amount][idx] != -1) return memo[sum + amount][idx];
 
 
-        return memo[idx][currTarget + sum];
+        int result = 
+                dfs(amount - nums[idx], idx + 1, nums) // minus
+            +   dfs(amount + nums[idx], idx + 1, nums); // plus
 
+        return memo[sum + amount][idx] = result;
     }
-
-    
 }
