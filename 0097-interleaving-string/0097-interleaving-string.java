@@ -2,10 +2,10 @@ class Solution {
     int START = 0;
     int FIRST = 1;
     int SECOND = 2;
-    int[][][] memo;
+    int[][] memo;
     public boolean isInterleave(String s1, String s2, String s3) {
         
-        memo = new int[s1.length() + 1][s2.length() + 1][s3.length()]; // 0 - not set, 1 - true, 2 - false
+        memo = new int[s1.length() + 1][s2.length() + 1]; // 0 - not set, 1 - true, 2 - false
 
         return backtrack(0, 0, 0, 0, 0, s1, s2, 0, s3);
 
@@ -18,7 +18,7 @@ class Solution {
         
         if (idx3 == s3.length()) return false;
 
-        if (memo[idx1][idx2][idx3] != 0) return memo[idx1][idx2][idx3]  == 1 ? true : false; 
+        if (memo[idx1][idx2] != 0) return memo[idx1][idx2]  == 1 ? true : false; 
 
         char c3 = s3.charAt(idx3);
 
@@ -47,7 +47,7 @@ class Solution {
             }
         }
 
-        memo[idx1][idx2][idx3] = (result ? 1 : 2);
+        memo[idx1][idx2] = (result ? 1 : 2);
 
         return result;
 
