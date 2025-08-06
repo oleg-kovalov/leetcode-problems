@@ -6,6 +6,27 @@ class Solution {
         boolean[][] dp = new boolean[s1.length() + 1][s2.length() + 1];
         dp[0][0] = true;
 
+        for (int i=0; i<dp.length; i++)
+        {
+            for (int j=0; j<dp[0].length; j++)
+            {
+                if (i == 0 && j == 0) continue;
+
+                char c3 = s3.charAt(i + j - 1);
+                dp[i][j] = false;
+                if (i > 0)
+                {
+                    dp[i][j] |= 
+                        (c3 == s1.charAt(i-1) && dp[i-1][j]); // try s1
+                }
+                if (j > 0)
+                {
+                    dp[i][j] |= 
+                        (c3 == s2.charAt(j-1) && dp[i][j-1]); // try s2
+                }   
+            }
+        }
+
         for (int len=1; len < s3.length() + 1; len++)
         {
             char c3 = s3.charAt(len - 1);
