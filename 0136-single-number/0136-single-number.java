@@ -1,11 +1,12 @@
 class Solution {
     public int singleNumber(int[] nums) {
-        int bitXor = 0;
-        for (final int num : nums)
+        int xor = nums[0];
+
+        for (int i=1; i<nums.length; i++)
         {
-            bitXor = bitXor ^ num;
+            xor ^= nums[i];
         }
-        
-        return bitXor;
+
+        return xor;
     }
 }
