@@ -1,41 +1,58 @@
 class Solution {
-        public String addBinary(String a, String b)
+    public String addBinary(String a, String b) {
+        
+        int ia = a.length() - 1;
+        int ib = b.length() - 1;
+        StringBuilder resultB = new StringBuilder();
+        int carryOver = 0; 
+
+        while (ia >= 0 || ib >= 0)
         {
+            int bitA = ia < 0 ? 0 : a.charAt(ia) - '0';
+            int bitB = ib < 0 ? 0 : b.charAt(ib) - '0';
 
-            StringBuilder result = new StringBuilder();
-            int ai = a.length() - 1;
-            int bi = b.length() - 1;
-            int carryover = 0;
+            int sum = bitA + bitB;
 
-            while (ai >= 0 || bi >= 0)
+            if (sum  == 0)
             {
-                int av = ai >=0 ? a.charAt(ai) - '0' : 0;
-                int bv = bi >=0 ? Character.getNumericValue(b.charAt(bi)) : 0;
-
-                int sum = av + bv + carryover;
-                if (sum == 2) {
-                    sum = 0;
-                    carryover = 1;
-                } else if (sum == 3)
+                resultB.append(carryOver == 0 ? 0 : 1);
+                carryOver = Math.max(0, carryOver - 1);
+            } else if (sum == 1)
+            {
+                if (carryOver == 0)
                 {
-                    sum = 1;
-                    carryover = 1;
+                    resultB.append(1);
                 } else {
-                    carryover = 0;
+                    resultB.append(0);
                 }
-
-                result.append(sum);
-
-                ai--;
-                bi--;
-            }
-
-            if (carryover == 1)
+            } else if (sum == 2)
             {
-                result.append(carryover);
+                if (carryOver == 0)
+                {
+                    resultB.append(0);
+                    carryOver += 1;
+                } else {
+                    resultB.append(1);
+                    carryOver += 1;
+                }
             }
 
 
-            return result.reverse().toString();
+            ia -= 1;
+            ib -= 1;
         }
+
+        // while (carryOver > 0)
+        // {
+        //     resultB.append(carryOver % 2);
+        //     carryOver /= 2;
+        // }
+
+        if (carryOver > 0)
+        {
+            resultB.append(1);
+        }
+
+        return resultB.reverse().toString();
+    }
 }
